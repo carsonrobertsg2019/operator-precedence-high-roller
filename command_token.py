@@ -5,6 +5,7 @@ class Token:
         self.lexeme = ""
         self.TokenType = TokenType.ERROR
         self.reserved_strings = [
+            "COMMAND_START",
             "END_OF_FILE",
             "PLUS",
             "MINUS",

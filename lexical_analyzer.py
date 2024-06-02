@@ -1,8 +1,6 @@
-from token_py import Token
+from command_token import Token
 from token_type import TokenType
 from input_buffer import InputBuffer
-
-import re
 
 class LexicalAnalyzer:
     def __init__(self):
@@ -66,11 +64,15 @@ class LexicalAnalyzer:
     def peek(self, how_far):
         if how_far <= 0:
             print("cannot peek a non-positive amount")
+            return
         peekIndex = self.index + how_far - 1
         if peekIndex > len(self.token_list) - 1:
             token = Token()
             token.lexeme = ""
             token.TokenType = TokenType.END_OF_FILE
+            return token
+        else:
+            return self.token_list[peekIndex]
 
     def get_token_main(self):
         c = None
@@ -82,6 +84,7 @@ class LexicalAnalyzer:
         else:
             return self.tmp
         match c:
+            case '!': self.tmp.TokenType = TokenType.COMMAND_START
             case '+': self.tmp.TokenType = TokenType.PLUS
             case '-': self.tmp.TokenType = TokenType.MINUS
             case '*': self.tmp.TokenType = TokenType.MULT
