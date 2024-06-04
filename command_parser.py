@@ -16,7 +16,7 @@ class CommandParser:
         elif map_char == 'R':       return 7 #ROLL
         elif map_char == 'N':       return 8 #NUM
         elif map_char == '$':       return 9
-        else:                       return -1 #force an index out of bounds
+        else:                       return None #force an error
 
     def determine_operator_precedence(a, b):
         operator_precedence_table = [
@@ -33,6 +33,8 @@ class CommandParser:
         ]
         return operator_precedence_table[a][b]
 
+    determine_operator_precedence(map_to_index('+'), map_to_index('-'))
+
     def expect(self, expected_type):
         token = self.lexer.get_token()
         if token.TokenType != expected_type:
@@ -43,7 +45,7 @@ class CommandParser:
     
     """
     init => COMMAND_START expr
-    expr => expr oper expr || ( expr ) || ROLL || NUM
+    expr => expr oper expr || ( expr ) || ROLL || NUM || 
     oper => PLUS || MINUS || MULT || DIV
     """
 
