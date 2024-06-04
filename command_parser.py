@@ -53,5 +53,6 @@ class CommandParser:
         self.expect(TokenType.COMMAND_START)
         self.parse_expr()
 
-    def parse_expr(self):
-        print('parsing expression')
+    def parse_expr(self, w, stack):
+        while True:
+            if True: break
