@@ -1,6 +1,6 @@
 class InputBuffer:
-    def __init__(self, main_string):
-        self.main_string = main_string
+    def __init__(self, input_string):
+        self.input_string = input_string
         self.eof = False
         self.input_buffer = []
 
