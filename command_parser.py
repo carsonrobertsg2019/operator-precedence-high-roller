@@ -10,7 +10,6 @@ class CommandParser:
         self.rhs = []
         self.syntax_error = False
         self.lexer = LexicalAnalyzer(input_string)
-        self.stack = StackNode()
 
     def initialize_stack(self):
         temp = [StackNode()]
@@ -131,7 +130,7 @@ class CommandParser:
         else: 
             return self.reduce_closed_par()
 
-    def parse_expr(self, w, stack):
+    def parse_expr(self):
         table = self.define_operator_precedence_table()
         while True:
             if (
