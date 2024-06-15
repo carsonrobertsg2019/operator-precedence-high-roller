@@ -15,7 +15,7 @@ async def on_message(message):
         await message.channel.send('https://tenor.com/view/programming-computer-frog-nerd-frog-smart-fog-csharp-gif-25385487')
         c = CommandParser(message.content)
         c.parse_init()
-        await message.channel.send(c.stack)
+        print(c.stack)
             
 with open('BOT-KEY', 'r') as file: bot_key = file.read().rstrip()
 client.run(bot_key)

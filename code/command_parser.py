@@ -7,7 +7,7 @@ class CommandParser:
     def __init__(self, input_string):
         self.input_string = input_string
         self.stack = self.initialize_stack()
-        self.rhs = []
+        self.rhs: list[StackNode] = []
         self.syntax_error = False
         self.lexer = LexicalAnalyzer(input_string)
 
@@ -19,16 +19,17 @@ class CommandParser:
 
     def define_operator_precedence_table(self):
         return [
-            ['?', '+', '-', '*', '/', '(', ')', 'R', 'N', '$'], 
-            ['+', '>', '>', '<', '<', '<', '>', '<', '<', '>'],
-            ['-', '>', '>', '<', '<', '<', '>', '<', '<', '>'],
-            ['*', '>', '>', '>', '>', '<', '>', '<', '<', '>'],
-            ['/', '>', '>', '>', '>', '<', '>', '<', '<', '>'],
-            ['(', '<', '<', '<', '<', '<', '=', '<', '<', 'X'],
-            [')', '>', '>', '>', '>', 'X', '>', 'X', 'X', '>'],
-            ['R', '>', '>', '>', '>', 'X', '>', 'X', 'X', '>'],
-            ['N', '>', '>', '>', '>', 'X', '>', 'X', 'X', '>'],
-            ['$', '<', '<', '<', '<', '<', 'X', '<', '<', 'A']
+            ['?', '+', '-', '*', '/', '(', ')', 'R', 'N', '$', 'X'],
+            ['+', '>', '>', '<', '<', '<', '>', '<', '<', '>', 'X'],
+            ['-', '>', '>', '<', '<', '<', '>', '<', '<', '>', 'X'],
+            ['*', '>', '>', '>', '>', '<', '>', '<', '<', '>', 'X'],
+            ['/', '>', '>', '>', '>', '<', '>', '<', '<', '>', 'X'],
+            ['(', '<', '<', '<', '<', '<', '=', '<', '<', 'X', 'X'],
+            [')', '>', '>', '>', '>', 'X', '>', 'X', 'X', '>', 'X'],
+            ['R', '>', '>', '>', '>', 'X', '>', 'X', 'X', '>', 'X'],
+            ['N', '>', '>', '>', '>', 'X', '>', 'X', 'X', '>', 'X'],
+            ['$', '<', '<', '<', '<', '<', 'X', '<', '<', 'A', 'X'],
+            ['X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X']
         ]
 
     def expect(self, expected_type):
@@ -75,9 +76,9 @@ class CommandParser:
 
     def is_arithm_expr(self):
         return (
-            not self.rhs[2] and
+            not self.rhs[2].is_terminal and
             self.is_operation() and
-            not self.rhs[0]
+            not self.rhs[0].is_terminal
         )
     
     def is_closed_par(self):
@@ -147,15 +148,15 @@ class CommandParser:
                     new_node.token_info = self.lexer.get_token()
                     self.stack.append(new_node)
                 elif table[a][b] == '>':
-                    self.rhs: list[StackNode] = []
+                    self.rhs = []
                     last_popped_terminal = self.null_token()
                     while True:
                         s = self.stack.pop()
                         if s.is_terminal:
-                            last_popped_terminal = s
+                            last_popped_terminal = s.token_info
                         self.rhs.append(s)
                         a = self.terminal_peek().token_info.TokenType.value
-                        b = last_popped_terminal.token_info.TokenType.value
+                        b = last_popped_terminal.TokenType.value
                         if self.stack[-1].is_terminal and table[a][b] == '<':
                             break
                     if self.is_valid_expr():
