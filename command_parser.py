@@ -13,10 +13,11 @@ class CommandParser:
 
     def initialize_stack(self):
         temp = [StackNode()]
-        temp[0].token_info = TokenType.END_OF_FILE
+        temp[0].token_info = Token()
+        temp[0].token_info.TokenType = TokenType.END_OF_FILE
         return temp
 
-    def define_operator_precedence_table():
+    def define_operator_precedence_table(self):
         return [
             ['?', '+', '-', '*', '/', '(', ')', 'R', 'N', '$'], 
             ['+', '>', '>', '<', '<', '<', '>', '<', '<', '>'],
@@ -53,7 +54,7 @@ class CommandParser:
         elif self.stack[-2].is_terminal: return self.stack[-2]
         else: return None
 
-    def null_token():
+    def null_token(self):
         token = Token()
         token.TokenType = TokenType.ERROR
         return token
@@ -88,7 +89,7 @@ class CommandParser:
     
     def is_valid_expr(self):
         if len(self.rhs) == 1:
-            return self.is_roll_or_num(self.rhs)
+            return self.is_roll_or_num()
         elif len(self.rhs) == 3:
             return self.is_arithm_expr() or self.is_closed_par()
         else:
@@ -139,21 +140,22 @@ class CommandParser:
             ): return
             else:
                 t = self.lexer.peek(1)
-                a = self.terminal_peek().token_info.TokenType
-                b = t.TokenType
+                a = self.terminal_peek().token_info.TokenType.value
+                b = t.TokenType.value
                 if table[a][b] in ['<', '=']:
-                    t = self.lexer.get_token()
-                    self.stack.append(t)
+                    new_node = StackNode()
+                    new_node.token_info = self.lexer.get_token()
+                    self.stack.append(new_node)
                 elif table[a][b] == '>':
                     self.rhs: list[StackNode] = []
-                    last_popped_terminal = self.null_token
+                    last_popped_terminal = self.null_token()
                     while True:
                         s = self.stack.pop()
                         if s.is_terminal:
                             last_popped_terminal = s
                         self.rhs.append(s)
-                        a = self.terminal_peek().token_info.TokenType
-                        b = last_popped_terminal.token_info.TokenType
+                        a = self.terminal_peek().token_info.TokenType.value
+                        b = last_popped_terminal.token_info.TokenType.value
                         if self.stack[-1].is_terminal and table[a][b] == '<':
                             break
                     if self.is_valid_expr():

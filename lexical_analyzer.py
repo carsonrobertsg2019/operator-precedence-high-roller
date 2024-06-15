@@ -12,7 +12,7 @@ class LexicalAnalyzer:
         self.tmp.TokenType = TokenType.ERROR
         self.input = InputBuffer(input_string)
         token = self.get_token_main()
-        while token != TokenType.END_OF_FILE:
+        while token.TokenType != TokenType.END_OF_FILE:
             self.token_list.append(token)
             token = self.get_token_main()
 
@@ -28,6 +28,7 @@ class LexicalAnalyzer:
     
     def isdigit(self, c):
         return (
+            c == '0' or
             c == '1' or
             c == '2' or
             c == '3' or
@@ -41,37 +42,39 @@ class LexicalAnalyzer:
         )
 
     def skip_space(self):
-        c = self.input.get_char
+        c = self.input.get_char()
         while not self.input.end_of_input() and self.isspace(c):
             c = self.input.get_char()
-        if self.input.end_of_input():
+        if not self.input.end_of_input():
             self.input.unget_char(c)
 
     def scan_number_or_roll(self):
         c = self.input.get_char()
-        self.tmp.lexeme = ''
+        tmp = Token()
+        tmp.lexeme = ''
         while not self.input.end_of_input() and self.isdigit(c):
-            self.tmp.lexeme += c
-            self.input.get_char()
+            tmp.lexeme += c
+            c = self.input.get_char()
         if c in ['d', 'e']:
             self.input.unget_char(c)
             tmp2 = self.scan_roll()
-            self.tmp.lexeme += tmp2.lexeme
-            self.tmp.TokenType = TokenType.ROLL
+            tmp.lexeme += tmp2.lexeme
+            tmp.TokenType = TokenType.ROLL
         elif not self.input.end_of_input():
             self.input.unget_char(c)
         
     def scan_roll(self):
-        self.tmp.lexeme = self.input.get_char()
+        tmp = Token()
+        tmp.lexeme = self.input.get_char()
         c = self.input.get_char()
         if self.isdigit(c):
             while not self.input.end_of_input() and self.isdigit(c):
-                self.tmp.lexeme += c
-                self.input.get_char()
+                tmp.lexeme += c
+                c = self.input.get_char()
             if not self.input.end_of_input():
                 self.input.unget_char(c)
-            self.tmp.TokenType = TokenType.ROLL
-            return self.tmp
+            tmp.TokenType = TokenType.ROLL
+            return tmp
         else:
             if not self.input.end_of_input():
                 self.input.unget_char(c)
@@ -102,25 +105,28 @@ class LexicalAnalyzer:
     def get_token_main(self):
         c = None
         self.skip_space()
-        self.tmp.lexeme = ""
-        self.tmp.TokenType = TokenType.END_OF_FILE
+        tmp = Token()
+        tmp.lexeme = ""
+        tmp.TokenType = TokenType.END_OF_FILE
         if not self.input.end_of_input():
-            self.input.get_char()
+            c = self.input.get_char()
         else:
-            return self.tmp
+            return tmp
         match c:
-            case '!': self.tmp.TokenType = TokenType.COMMAND_START
-            case '+': self.tmp.TokenType = TokenType.PLUS
-            case '-': self.tmp.TokenType = TokenType.MINUS
-            case '*': self.tmp.TokenType = TokenType.MULT
-            case '/': self.tmp.TokenType = TokenType.DIV
-            case '(': self.tmp.TokenType = TokenType.LPAREN
-            case ')': self.tmp.TokenType = TokenType.RPAREN
+            case '!': tmp.TokenType = TokenType.COMMAND_START
+            case '+': tmp.TokenType = TokenType.PLUS
+            case '-': tmp.TokenType = TokenType.MINUS
+            case '*': tmp.TokenType = TokenType.MULT
+            case '/': tmp.TokenType = TokenType.DIV
+            case '(': tmp.TokenType = TokenType.LPAREN
+            case ')': tmp.TokenType = TokenType.RPAREN
             case _:
                 if self.isdigit(c):
-                    self.tmp = self.scan_number_or_roll()
+                    self.input.unget_char(c)
+                    tmp = self.scan_number_or_roll()
                 elif c in ['d', 'e']:
-                    self.tmp = self.scan_roll()
+                    self.input.unget_char(c)
+                    tmp = self.scan_roll()
                 else:
-                    self.tmp.TokenType = TokenType.ERROR
-        return self.tmp
+                    tmp.TokenType = TokenType.ERROR
+        return tmp

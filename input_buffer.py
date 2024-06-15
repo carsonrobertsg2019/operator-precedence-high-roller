@@ -19,9 +19,9 @@ class InputBuffer:
             return self.input_buffer.pop()
         else:
             try:
-                c = self.main_string[0]
-                self.main_string = self.main_string[1:len(self.main_string)]
-                return self.main_string[0]
+                c = self.input_string[0]
+                self.input_string = self.input_string[1:len(self.input_string)]
+                return c
             except:
                 self.eof = True
                 return '$'
