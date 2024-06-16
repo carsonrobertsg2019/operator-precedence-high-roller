@@ -37,8 +37,7 @@ class LexicalAnalyzer:
             c == '6' or
             c == '7' or
             c == '8' or
-            c == '9' or
-            c == '10'
+            c == '9'
         )
 
     def skip_space(self):
@@ -55,13 +54,27 @@ class LexicalAnalyzer:
         if self.isdigit(c):
             while not self.input.end_of_input() and self.isdigit(c):
                 tmp.lexeme += c
-                self.input.get_char()
+                c = self.input.get_char()
             if c in ['d', 'e']:
-                tmp2 = self.scan_roll()
-                tmp.lexeme += tmp2.lexeme
+                tmp.lexeme += c
+                c = self.input.get_char()
+                if self.isdigit(c):
+                    while not self.input.end_of_input() and self.isdigit(c):
+                        tmp.lexeme += c
+                        c = self.input.get_char()
+                    if not self.input.end_of_input():
+                        self.input.unget_char(c)
+                    tmp.TokenType = TokenType.ROLL
+                    return tmp
+                else:
+                    if not self.input.end_of_input():
+                        self.input.unget_char(c)
+                    tmp.lexeme = ""
+                    tmp.TokenType = TokenType.ERROR
+                    return tmp
             if not self.input.end_of_input():
                 self.input.unget_char(c)
-            tmp.TokenType = TokenType.NUM
+            tmp.TokenType = TokenType.ROLL
             return tmp
         else:
             if not self.input.end_of_input():
