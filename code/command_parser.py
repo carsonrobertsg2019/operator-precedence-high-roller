@@ -149,13 +149,16 @@ class CommandParser:
         else:
             print('syntax error')
 
+    def no_more_expr_parsing(self):
+        return (
+            self.terminal_peek().token_info.TokenType == TokenType.END_OF_FILE and
+            self.lexer.peek(1).TokenType == TokenType.END_OF_FILE
+        )
+
     def parse_expr(self):
         table = self.define_operator_precedence_table()
         while True:
-            if (
-                self.terminal_peek().token_info.TokenType == TokenType.END_OF_FILE and
-                self.lexer.peek(1).TokenType == TokenType.END_OF_FILE 
-            ): return
+            if self.no_more_expr_parsing(): return
             else:
                 t = self.lexer.peek(1)
                 a = self.terminal_peek().token_info.TokenType.value

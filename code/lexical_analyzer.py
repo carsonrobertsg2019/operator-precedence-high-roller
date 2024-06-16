@@ -84,16 +84,25 @@ class LexicalAnalyzer:
         
     def scan_roll(self):
         tmp = Token()
-        tmp.lexeme = self.input.get_char()
+        tmp.lexeme = ""
         c = self.input.get_char()
-        if self.isdigit(c):
-            while not self.input.end_of_input() and self.isdigit(c):
-                tmp.lexeme += c
-                c = self.input.get_char()
-            if not self.input.end_of_input():
-                self.input.unget_char(c)
-            tmp.TokenType = TokenType.ROLL
-            return tmp
+        if c in ['d', 'e']:
+            tmp.lexeme += c
+            c = self.input.get_char()
+            if self.isdigit(c):
+                while not self.input.end_of_input() and self.isdigit(c):
+                    tmp.lexeme += c
+                    c = self.input.get_char()
+                if not self.input.end_of_input():
+                    self.input.unget_char(c)
+                tmp.TokenType = TokenType.ROLL
+                return tmp
+            else:
+                if not self.input.end_of_input():
+                    self.input.unget_char(c)
+                tmp.lexeme = ""
+                tmp.TokenType = TokenType.ERROR
+                return tmp
         else:
             if not self.input.end_of_input():
                 self.input.unget_char(c)
