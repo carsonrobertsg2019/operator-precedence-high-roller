@@ -46,6 +46,21 @@ class LexicalAnalyzer:
             c = self.input.get_char()
         if not self.input.end_of_input():
             self.input.unget_char(c)
+    
+    def scan_error(self, tmp: Token, c):
+        if not self.input.end_of_input():
+            self.input.unget_char(c)
+        tmp.TokenType = TokenType.ERROR
+        return tmp
+    
+    def scan_num_sides(self, tmp, c):
+        while not self.input.end_of_input() and self.isdigit(c):
+            tmp.lexeme += c
+            c = self.input.get_char()
+        if not self.input.end_of_input():
+            self.input.unget_char(c)
+        tmp.TokenType = TokenType.ROLL
+        return tmp
 
     def scan_number_or_roll(self):
         tmp = Token()
@@ -59,28 +74,15 @@ class LexicalAnalyzer:
                 tmp.lexeme += c
                 c = self.input.get_char()
                 if self.isdigit(c):
-                    while not self.input.end_of_input() and self.isdigit(c):
-                        tmp.lexeme += c
-                        c = self.input.get_char()
-                    if not self.input.end_of_input():
-                        self.input.unget_char(c)
-                    tmp.TokenType = TokenType.ROLL
-                    return tmp
+                    return self.scan_num_sides(tmp, c)
                 else:
-                    if not self.input.end_of_input():
-                        self.input.unget_char(c)
-                    tmp.lexeme = ""
-                    tmp.TokenType = TokenType.ERROR
-                    return tmp
+                    return self.scan_error(tmp, c)
             if not self.input.end_of_input():
                 self.input.unget_char(c)
-            tmp.TokenType = TokenType.ROLL
+            tmp.TokenType = TokenType.NUM
             return tmp
         else:
-            if not self.input.end_of_input():
-                self.input.unget_char(c)
-            tmp.TokenType = TokenType.ERROR
-            return tmp
+            return self.scan_error(tmp, c)
         
     def scan_roll(self):
         tmp = Token()
@@ -90,25 +92,11 @@ class LexicalAnalyzer:
             tmp.lexeme += c
             c = self.input.get_char()
             if self.isdigit(c):
-                while not self.input.end_of_input() and self.isdigit(c):
-                    tmp.lexeme += c
-                    c = self.input.get_char()
-                if not self.input.end_of_input():
-                    self.input.unget_char(c)
-                tmp.TokenType = TokenType.ROLL
-                return tmp
+                return self.scan_num_sides(tmp, c)
             else:
-                if not self.input.end_of_input():
-                    self.input.unget_char(c)
-                tmp.lexeme = ""
-                tmp.TokenType = TokenType.ERROR
-                return tmp
+                return self.scan_error(tmp, c)
         else:
-            if not self.input.end_of_input():
-                self.input.unget_char(c)
-            tmp.lexeme = ""
-            tmp.TokenType = TokenType.ERROR
-            return tmp
+            return self.scan_error(tmp, c)
     
     def get_token(self):
         token = Token()
