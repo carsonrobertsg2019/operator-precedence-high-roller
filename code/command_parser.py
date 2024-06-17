@@ -89,6 +89,8 @@ class CommandParser:
             return self.is_arithm_expr() or self.is_closed_par()
         else:
             print('syntax error')
+            self.syntax_error = True
+            return None
 
     def reduce_roll_or_num(self):
         new_node = StackNode()
@@ -148,6 +150,8 @@ class CommandParser:
             self.stack.append(new_node)
         else:
             print('syntax error')
+            self.syntax_error = True
+            return None
 
     def more_expr_parsing(self):
         return (
@@ -167,3 +171,5 @@ class CommandParser:
                 self.reduce(table)
             else:
                 print('syntax error')
+                self.syntax_error = True
+                return None

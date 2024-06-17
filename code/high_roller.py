@@ -17,8 +17,10 @@ async def on_message(message):
         p = CommandParser(message.content)
         p.parse_init()
         c = Compute()
-        c.compute_expr(p.stack[1])
-        await message.channel.send(p.stack)
+        if len(p.stack) == 2 and not p.syntax_error:
+            await message.channel.send(str(c.compute_expr(p.stack[1])) + '\nDetails: ' + str(c.all_rolls))
+        else:
+            await message.channel.send('https://tenor.com/view/blm-gif-25815938')
         
 with open('BOT-KEY', 'r') as file: bot_key = file.read().rstrip()
 client.run(bot_key)
