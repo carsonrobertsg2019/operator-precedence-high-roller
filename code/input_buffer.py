@@ -25,7 +25,3 @@ class InputBuffer:
             except:
                 self.eof = True
                 return '$'
-        
-    def unget_string(self, to_unget):
-        self.input_buffer.append(to_unget[::-1])
-        return to_unget

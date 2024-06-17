@@ -12,15 +12,20 @@ async def on_ready():
 @client.event
 async def on_message(message):
     if len(message.content) > 0 and message.content[0] == '!':
-        #await message.channel.send('Programming Frog hard at work')
-        #await message.channel.send('https://tenor.com/view/programming-computer-frog-nerd-frog-smart-fog-csharp-gif-25385487')
         p = CommandParser(message.content)
         p.parse_init()
         c = Compute()
-        if len(p.stack) == 2 and not p.syntax_error:
-            await message.channel.send(str(c.compute_expr(p.stack[1])) + '\nDetails: ' + str(c.all_rolls))
+        result = c.compute_expr(p.stack[1])
+        if not len(p.stack) == 2 or p.syntax_error or c.error:
+            await message.channel.send('https://tenor.com/view/blm-gif-25815938')    
         else:
-            await message.channel.send('https://tenor.com/view/blm-gif-25815938')
+            to_send = str(result) + '\nDetails: ' + str(c.all_rolls)
+            if (len(to_send)) > 2000:
+                to_send_list = [(to_send[i:i+2000]) for i in range(0, len(to_send), 2000)]
+                for to_send in to_send_list:
+                    await message.channel.send(to_send)
+            else:
+                await message.channel.send(to_send)            
         
 with open('BOT-KEY', 'r') as file: bot_key = file.read().rstrip()
 client.run(bot_key)
