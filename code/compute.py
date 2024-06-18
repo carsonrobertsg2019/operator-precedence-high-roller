@@ -27,6 +27,28 @@ class Compute:
         self.all_lists_of_rolls.append(list_of_rolls)
         return rolled_total
     
+    def roll_exploding_die(self, to_roll):
+        num_rolls = int(to_roll[:to_roll.index('e')]) if to_roll[:to_roll.index('e')] != '' else 1
+        num_sides = int(to_roll[to_roll.index('e')+1:])
+        if num_rolls > 1000 or num_rolls > 10000:
+            self.error = True
+            return 0
+        rolled_total = 0
+        list_of_rolls = []
+        for i in range(num_rolls):
+            roll = 0
+            while(True):
+                self.i += 1
+                if random.random() < 0.025:
+                    self.cocked_rolls.append((random.randint(1, num_sides), self.i))
+                roll = random.randint(1, num_sides)
+                rolled_total += roll
+                list_of_rolls.append(roll)
+                if roll != num_sides or num_sides == 1:
+                    break
+        self.all_lists_of_rolls.append(list_of_rolls)
+        return rolled_total
+    
     def compute_expr(self, reduced_expr: StackNode):
         if reduced_expr.oper == TokenType.PLUS:
             left_expr = self.compute_expr(reduced_expr.left)
@@ -53,6 +75,9 @@ class Compute:
         elif 'd' in reduced_expr.token_info.lexeme:
             to_roll = reduced_expr.token_info.lexeme
             return self.roll_die(to_roll)
+        elif 'e' in reduced_expr.token_info.lexeme:
+            to_roll = reduced_expr.token_info.lexeme
+            return self.roll_exploding_die(to_roll)
         else:
             num = int(reduced_expr.token_info.lexeme)
             return num
