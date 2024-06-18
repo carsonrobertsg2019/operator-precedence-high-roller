@@ -6,7 +6,7 @@ class Compute:
     def __init__(self):
         self.i = 0
         self.cocked_rolls = []
-        self.all_rolls = []
+        self.all_lists_of_rolls = []
         self.error = False
     
     def roll_die(self, to_roll):
@@ -16,13 +16,15 @@ class Compute:
             self.error = True
             return 0
         rolled_total = 0
+        list_of_rolls = []
         for i in range(num_rolls):
             self.i += 1
             if random.random() < 0.025:
                 self.cocked_rolls.append((random.randint(1, num_sides), self.i))
             roll = random.randint(1, num_sides)
-            self.all_rolls.append(roll)
+            list_of_rolls.append(roll)
             rolled_total += roll
+        self.all_lists_of_rolls.append(list_of_rolls)
         return rolled_total
     
     def compute_expr(self, reduced_expr: StackNode):
