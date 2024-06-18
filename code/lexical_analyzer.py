@@ -40,9 +40,9 @@ class LexicalAnalyzer:
             c == '9'
         )
 
-    def skip_space(self):
+    def skip_space_and_escape_chars0(self):
         c = self.input.get_char()
-        while not self.input.end_of_input() and self.isspace(c):
+        while not self.input.end_of_input() and (self.isspace(c) or c == '\\'):
             c = self.input.get_char()
         if not self.input.end_of_input():
             self.input.unget_char(c)
