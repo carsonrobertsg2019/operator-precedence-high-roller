@@ -25,7 +25,8 @@ class Compute:
             list_of_rolls.append(roll)
             rolled_total += roll
         self.all_lists_of_rolls.append(list_of_rolls)
-        return rolled_total
+        roll_avg = int((1+num_sides)/2*num_rolls)
+        return (rolled_total, roll_avg)
     
     def roll_exploding_die(self, to_roll):
         num_rolls = int(to_roll[:to_roll.index('e')]) if to_roll[:to_roll.index('e')] != '' else 1
@@ -46,38 +47,52 @@ class Compute:
                 list_of_rolls.append(roll)
                 if roll != num_sides or num_sides == 1:
                     break
+        roll_avg = 0
+        for i in range(num_sides):
+            roll_avg += (i + 1)
+        roll_avg = int(roll_avg/(num_sides-1)*num_rolls)
         self.all_lists_of_rolls.append(list_of_rolls)
-        return rolled_total
+        return (rolled_total, roll_avg)
     
     def compute_expr(self, reduced_expr: StackNode):
         if reduced_expr.oper == TokenType.PLUS:
-            left_expr = self.compute_expr(reduced_expr.left)
-            right_expr = self.compute_expr(reduced_expr.right)
-            return left_expr + right_expr
+            res_left = self.compute_expr(reduced_expr.left)
+            left_expr = (res_left[0], res_left[1])
+            res_right = self.compute_expr(reduced_expr.right)
+            right_expr = (res_right[0], res_right[1])
+            return (left_expr[0] + right_expr[0], left_expr[1] + right_expr[1])
         elif reduced_expr.oper == TokenType.MINUS:
-            left_expr = self.compute_expr(reduced_expr.left)
-            right_expr = self.compute_expr(reduced_expr.right)
-            return left_expr - right_expr
+            res_left = self.compute_expr(reduced_expr.left)
+            left_expr = (res_left[0], res_left[1])
+            res_right = self.compute_expr(reduced_expr.right)
+            right_expr = (res_right[0], res_right[1])
+            return (left_expr[0] - right_expr[0], left_expr[1] - right_expr[1])
         elif reduced_expr.oper == TokenType.MULT:
-            left_expr = self.compute_expr(reduced_expr.left)
-            right_expr = self.compute_expr(reduced_expr.right)
-            return left_expr * right_expr
+            res_left = self.compute_expr(reduced_expr.left)
+            left_expr = (res_left[0], res_left[1])
+            res_right = self.compute_expr(reduced_expr.right)
+            right_expr = (res_right[0], res_right[1])
+            return (left_expr[0] * right_expr[0], left_expr[1] * right_expr[1])
         elif reduced_expr.oper == TokenType.DIV:
-            left_expr = self.compute_expr(reduced_expr.left)
-            right_expr = self.compute_expr(reduced_expr.right)
-            if right_expr == 0:
+            res_left = self.compute_expr(reduced_expr.left)
+            left_expr = (res_left[0], res_left[1])
+            res_right = self.compute_expr(reduced_expr.right)
+            right_expr = (res_right[0], res_right[1])
+            if right_expr[0] == 0:
                 self.error = True
                 return 0
-            return int(left_expr / right_expr)
+            return (int(left_expr[0] / right_expr[0]), int(left_expr[1] / right_expr[1]))
         elif reduced_expr.token_info.TokenType == TokenType.ERROR:
             self.error = True
             return 0
         elif 'd' in reduced_expr.token_info.lexeme:
             to_roll = reduced_expr.token_info.lexeme
-            return self.roll_die(to_roll)
+            res = self.roll_die(to_roll)
+            return (res[0], res[1])
         elif 'e' in reduced_expr.token_info.lexeme:
             to_roll = reduced_expr.token_info.lexeme
-            return self.roll_exploding_die(to_roll)
+            res = self.roll_exploding_die(to_roll)
+            return (res[0], res[1])
         else:
             num = int(reduced_expr.token_info.lexeme)
-            return num
+            return (num, num)

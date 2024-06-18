@@ -40,7 +40,7 @@ class LexicalAnalyzer:
             c == '9'
         )
 
-    def skip_space_and_escape_chars0(self):
+    def skip_space_and_escape_chars(self):
         c = self.input.get_char()
         while not self.input.end_of_input() and (self.isspace(c) or c == '\\'):
             c = self.input.get_char()
@@ -123,7 +123,7 @@ class LexicalAnalyzer:
 
     def get_token_main(self):
         c = None
-        self.skip_space()
+        self.skip_space_and_escape_chars()
         tmp = Token()
         tmp.lexeme = ""
         tmp.TokenType = TokenType.END_OF_FILE
