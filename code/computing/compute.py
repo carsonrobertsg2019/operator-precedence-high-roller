@@ -1,5 +1,5 @@
-from stacknode import StackNode
-from token_type import TokenType
+from parsing.stacknode import StackNode
+from parsing.token_type import TokenType
 import random
 
 class Compute:

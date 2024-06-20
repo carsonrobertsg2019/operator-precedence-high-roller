@@ -1,6 +1,6 @@
 import discord
-from command_parser import CommandParser
-from compute import Compute
+from parsing.command_parser import CommandParser
+from computing.compute import Compute
 from discord.ext import commands
 intents = discord.Intents.all()
 client = discord.Client(command_prefix='!', intents=intents)

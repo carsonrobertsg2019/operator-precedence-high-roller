@@ -1,7 +1,7 @@
-from lexical_analyzer import LexicalAnalyzer
-from token_type import TokenType
-from command_token import Token
-from stacknode import StackNode
+from .lexical_analyzer import LexicalAnalyzer
+from .token_type import TokenType
+from .command_token import Token
+from parsing.stacknode import StackNode
 
 class CommandParser:
     def __init__(self, input_string):

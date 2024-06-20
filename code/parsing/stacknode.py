@@ -1,5 +1,4 @@
-from token_type import TokenType
-from command_token import Token
+from .command_token import Token
 
 class StackNode:
     def __init__(self):

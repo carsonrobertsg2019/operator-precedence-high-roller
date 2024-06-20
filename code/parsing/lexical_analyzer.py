@@ -1,6 +1,6 @@
-from command_token import Token
-from token_type import TokenType
-from input_buffer import InputBuffer
+from .command_token import Token
+from .token_type import TokenType
+from .input_buffer import InputBuffer
 
 class LexicalAnalyzer:
     def __init__(self, input_string):
