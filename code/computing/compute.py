@@ -8,6 +8,7 @@ class Compute:
         self.cocked_rolls = []
         self.all_lists_of_rolls = []
         self.error = False
+        self.cocked_odds = 0.025
     
     def roll_die(self, to_roll):
         num_rolls = int(to_roll[:to_roll.index('d')]) if to_roll[:to_roll.index('d')] != '' else 1
@@ -19,7 +20,7 @@ class Compute:
         list_of_rolls = []
         for i in range(num_rolls):
             self.i += 1
-            if random.random() < 0.025:
+            if random.random() < self.cocked_odds:
                 self.cocked_rolls.append((random.randint(1, num_sides), self.i))
             roll = random.randint(1, num_sides)
             list_of_rolls.append(roll)
@@ -40,7 +41,7 @@ class Compute:
             roll = 0
             while(True):
                 self.i += 1
-                if random.random() < 0.025:
+                if random.random() < self.cocked_odds:
                     self.cocked_rolls.append((random.randint(1, num_sides), self.i))
                 roll = random.randint(1, num_sides)
                 rolled_total += roll
