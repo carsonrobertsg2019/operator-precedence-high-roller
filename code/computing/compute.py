@@ -32,7 +32,7 @@ class Compute:
     def roll_exploding_die(self, to_roll):
         num_rolls = int(to_roll[:to_roll.index('e')]) if to_roll[:to_roll.index('e')] != '' else 1
         num_sides = int(to_roll[to_roll.index('e')+1:])
-        if num_rolls > 1000 or num_rolls > 10000:
+        if num_rolls > 1000 or num_sides > 10000:
             self.error = True
             return 0
         rolled_total = 0
