@@ -2,7 +2,7 @@
   "players": [
     {
       "username": "kaczynskicore",
-      "gambling": "True",
+      "gambling": "False",
       "even": "False"
     },
     {
