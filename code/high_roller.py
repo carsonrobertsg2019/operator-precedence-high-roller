@@ -12,30 +12,30 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-    json_handler = JsonHandling()
+    json_handler = JsonHandling(playername=message.author.name)
     c = Compute()
-    if message.content.lower() == '!gamble' and not json_handler.gambling():
+    if message.content.lower() == '!gamble' and not json_handler.gambling(message.author.name):
         await message.channel.send('odds or evens?')
-        json_handler.update_json(gambling=True)
-    elif json_handler.gambling() and 'odds or evens?' not in message.content.lower():
+        json_handler.update_json(message.author.name, gambling=True)
+    elif json_handler.gambling(message.author.name) and 'odds or evens?' not in message.content.lower():
         if message.content.lower() == 'evens':
-            json_handler.update_json(even=True)
+            json_handler.update_json(message.author.name, even=True)
         else:
-            json_handler.update_json(even=False)
-        json_handler.update_json(gambling=False)
+            json_handler.update_json(message.author.name, even=False)
+        json_handler.update_json(message.author.name, gambling=False)
         res = c.roll_die('d20')
         if int(res[0]) % 2 == 0:
-            if json_handler.iseven():
+            if json_handler.iseven(message.author.name):
                 await message.channel.send(str(res[0]) + ' :slight_smile:')
             else:
                 await message.channel.send(str(res[0]) + ' :slight_frown:')
         else:
-            if json_handler.iseven():
+            if json_handler.iseven(message.author.name):
                 await message.channel.send(str(res[0]) + ' :slight_frown:')
             else:
                 await message.channel.send(str(res[0]) + ' :slight_smile:')
     elif len(message.content) > 0 and message.content[0] == '!':
-        json_handler.update_json(gambling=False)
+        json_handler.update_json(message.author.name, gambling=False)
         p = CommandParser(message.content)
         p.parse_init()
         if len(p.stack) < 2 or p.syntax_error:
@@ -57,7 +57,7 @@ async def on_message(message):
                 else:
                     await message.channel.send(to_send)
     else:
-        json_handler.update_json(gambling=False)
+        json_handler.update_json(message.author.name, gambling=False)
         
 with open('BOT-KEY', 'r') as file: bot_key = file.read().rstrip()
 client.run(bot_key)
