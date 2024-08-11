@@ -20,8 +20,15 @@ async def on_message(message):
     elif json_handler.gambling(message.author.name) and 'odds or evens?' not in message.content.lower():
         if message.content.lower() == 'evens':
             json_handler.update_json(message.author.name, even=True)
-        else:
+        elif message.content.lower() == 'odds':
             json_handler.update_json(message.author.name, even=False)
+        elif message.content.lower() == 'cancel':
+            json_handler.update_json(message.author.name, gambling=False)
+            await message.channel.send("lame :rolling_eyes:")
+            return
+        else: 
+            await message.channel.send("you're still gambling, i said odds or evens? you can also say 'cancel' if you're lame")
+            return
         json_handler.update_json(message.author.name, gambling=False)
         res = c.roll_die('d20')
         if int(res[0]) % 2 == 0:
