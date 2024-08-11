@@ -18,9 +18,9 @@ class JsonHandling:
 
     def calc_index(self, playername):
         for i in range(len(self.player_info_object["players"])):
-            if self.player_info_object["players"][i] == playername: 
+            if self.player_info_object["players"][i]["username"] == playername: 
                 return i
-        else: return 0
+        else: return None
 
     def gambling(self, playername):
         index = self.calc_index(playername)
