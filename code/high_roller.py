@@ -1,6 +1,7 @@
 import discord
 from parsing.command_parser import CommandParser
 from computing.compute import Compute
+from gambling.gamble import Gamble
 from json_handling import JsonHandling
 from discord.ext import commands
 intents = discord.Intents.all()
@@ -25,39 +26,19 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-    json_handler = JsonHandling(playername=message.author.name)
     c = Compute()
-    if (not channel_valid(message)) and (message.content[0] == '!' or message.content in ['odds', 'evens']):
+    gamble = Gamble(message, c)
+    g = gamble.gambling()
+    if not channel_valid(message) and (message.content[0] == '!' or message.content in ['odds', 'evens']):
         await message.channel.send("https://tenor.com/view/blm-gif-25815938")
-    elif message.content.lower() == '!gamble' and not json_handler.gambling(message.author.name):
+    elif message.content.lower() == '!gamble' and not gamble.gambling():
         await message.channel.send('odds or evens?')
-        json_handler.update_json(message.author.name, gambling=True)
-    elif json_handler.gambling(message.author.name) and 'odds or evens?' not in message.content.lower():
-        if message.content.lower() == 'evens':
-            json_handler.update_json(message.author.name, even=True)
-        elif message.content.lower() == 'odds':
-            json_handler.update_json(message.author.name, even=False)
-        elif message.content.lower() == 'cancel':
-            json_handler.update_json(message.author.name, gambling=False)
-            await message.channel.send("lame :rolling_eyes:")
-            return
-        else: 
-            await message.channel.send("you're still gambling, i said odds or evens? you can also say 'cancel' if you're lame")
-            return
-        json_handler.update_json(message.author.name, gambling=False)
-        res = c.roll_die('d20')
-        if int(res[0]) % 2 == 0:
-            if json_handler.iseven(message.author.name):
-                await message.channel.send(str(res[0]) + ' :slight_smile:')
-            else:
-                await message.channel.send(str(res[0]) + ' :slight_frown:')
-        else:
-            if json_handler.iseven(message.author.name):
-                await message.channel.send(str(res[0]) + ' :slight_frown:')
-            else:
-                await message.channel.send(str(res[0]) + ' :slight_smile:')
+        gamble.update_gambling_state(True)
+    elif gamble.gambling() and message.author.name != 'High Roller':
+        await gamble.determine_call()
+        if not gamble.gambling():
+            await gamble.determine_result()
     elif len(message.content) > 0 and message.content[0] == '!':
-        json_handler.update_json(message.author.name, gambling=False)
         p = CommandParser(message.content)
         p.parse_init()
         if len(p.stack) < 2 or p.syntax_error:
@@ -78,8 +59,6 @@ async def on_message(message):
                         await message.channel.send(to_send)
                 else:
                     await message.channel.send(to_send)
-    else:
-        json_handler.update_json(message.author.name, gambling=False)
         
 with open('BOT-KEY', 'r') as file: bot_key = file.read().rstrip()
 client.run(bot_key)
