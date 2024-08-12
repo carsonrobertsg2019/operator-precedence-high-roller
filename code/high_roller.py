@@ -27,7 +27,7 @@ async def on_ready():
 async def on_message(message):
     json_handler = JsonHandling(playername=message.author.name)
     c = Compute()
-    if not channel_valid(message) and message.content != "https://tenor.com/view/blm-gif-25815938":
+    if not channel_valid(message) and (message.content[0] == '!' or message.content in ['odds', 'evens']):
         await message.channel.send("https://tenor.com/view/blm-gif-25815938")
     elif message.content.lower() == '!gamble' and not json_handler.gambling(message.author.name):
         await message.channel.send('odds or evens?')
