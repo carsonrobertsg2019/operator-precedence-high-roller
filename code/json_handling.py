@@ -26,10 +26,6 @@ class JsonHandling:
         index = self.calc_index(playername)
         return self.player_info_object["players"][index]["gambling"] == "True"
 
-    def iseven(self, playername):
-        index = self.calc_index(playername)
-        return self.player_info_object["players"][index]["even"] == "True"
-
     def update_json(self, playername, gambling = None, even = None):
         index = self.calc_index(playername)
         if (gambling != None):
