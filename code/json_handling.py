@@ -11,7 +11,7 @@ class JsonHandling:
             if self.player_info_object["players"][i]["username"] == playername:
                 unique = False
         if unique:
-            self.player_info_object["players"].append({"username": playername, "gambling": "False", "even": "False"})
+            self.player_info_object["players"].append({"username": playername, "gambling": "False"})
             json_object = json.dumps(self.player_info_object, indent=2) 
             with open("player_info.json", "w") as outfile: outfile.write(json_object)
         pass
@@ -26,11 +26,9 @@ class JsonHandling:
         index = self.calc_index(playername)
         return self.player_info_object["players"][index]["gambling"] == "True"
 
-    def update_json(self, playername, gambling = None, even = None):
+    def update_json(self, playername, gambling = None):
         index = self.calc_index(playername)
         if (gambling != None):
             self.player_info_object["players"][index]["gambling"] = str(gambling)
-        if (even != None):
-            self.player_info_object["players"][index]["even"] = str(even)
         json_object = json.dumps(self.player_info_object, indent=2)
         with open("player_info.json", "w") as outfile: outfile.write(json_object)
