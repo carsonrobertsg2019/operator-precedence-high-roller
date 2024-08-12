@@ -6,6 +6,19 @@ from discord.ext import commands
 intents = discord.Intents.all()
 client = discord.Client(command_prefix='!', intents=intents)
 
+def channel_valid(message):
+    keywords = [
+        'dice',
+        'rolls',
+        'dumpster',
+        'box-of-doom'
+    ]
+    valid = False
+    for word in keywords:
+        if word in message.content.lower(): valid = True
+    return valid
+
+
 @client.event
 async def on_ready():
     print('We have logged in as {0.user}'.format(client))
@@ -14,13 +27,15 @@ async def on_ready():
 async def on_message(message):
     json_handler = JsonHandling(playername=message.author.name)
     c = Compute()
-    if message.content.lower() == '!gamble' and not json_handler.gambling(message.author.name):
-        await message.channel.send('odds or evens?')
+    if not channel_valid(message) and message.content != "https://tenor.com/view/blm-gif-25815938":
+        await message.channel.send("https://tenor.com/view/blm-gif-25815938")
+    elif message.content.lower() == '!gamble' and not json_handler.gambling(message.author.name):
+        await message.channel.send('!odds or !evens?')
         json_handler.update_json(message.author.name, gambling=True)
-    elif json_handler.gambling(message.author.name) and 'odds or evens?' not in message.content.lower():
-        if message.content.lower() == 'evens':
+    elif json_handler.gambling(message.author.name) and '!odds or !evens?' not in message.content.lower():
+        if message.content.lower() == '!evens':
             json_handler.update_json(message.author.name, even=True)
-        elif message.content.lower() == 'odds':
+        elif message.content.lower() == '!odds':
             json_handler.update_json(message.author.name, even=False)
         elif message.content.lower() == 'cancel':
             json_handler.update_json(message.author.name, gambling=False)
