@@ -15,7 +15,7 @@ def channel_valid(message):
     ]
     valid = False
     for word in keywords:
-        if word in message.content.lower(): valid = True
+        if word in message.channel.name: valid = True
     return valid
 
 
@@ -27,7 +27,7 @@ async def on_ready():
 async def on_message(message):
     json_handler = JsonHandling(playername=message.author.name)
     c = Compute()
-    if not channel_valid(message) and (message.content[0] == '!' or message.content in ['odds', 'evens']):
+    if (not channel_valid(message)) and (message.content[0] == '!' or message.content in ['odds', 'evens']):
         await message.channel.send("https://tenor.com/view/blm-gif-25815938")
     elif message.content.lower() == '!gamble' and not json_handler.gambling(message.author.name):
         await message.channel.send('odds or evens?')
