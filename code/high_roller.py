@@ -30,12 +30,12 @@ async def on_message(message):
     if not channel_valid(message) and message.content != "https://tenor.com/view/blm-gif-25815938":
         await message.channel.send("https://tenor.com/view/blm-gif-25815938")
     elif message.content.lower() == '!gamble' and not json_handler.gambling(message.author.name):
-        await message.channel.send('!odds or !evens?')
+        await message.channel.send('odds or evens?')
         json_handler.update_json(message.author.name, gambling=True)
-    elif json_handler.gambling(message.author.name) and '!odds or !evens?' not in message.content.lower():
-        if message.content.lower() == '!evens':
+    elif json_handler.gambling(message.author.name) and 'odds or evens?' not in message.content.lower():
+        if message.content.lower() == 'evens':
             json_handler.update_json(message.author.name, even=True)
-        elif message.content.lower() == '!odds':
+        elif message.content.lower() == 'odds':
             json_handler.update_json(message.author.name, even=False)
         elif message.content.lower() == 'cancel':
             json_handler.update_json(message.author.name, gambling=False)
