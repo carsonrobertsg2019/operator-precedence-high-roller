@@ -8,10 +8,11 @@ client = discord.Client(command_prefix='!', intents=intents)
 
 def channel_valid(message):
     keywords = [
-        'dice',
-        'rolls',
-        'dumpster',
-        'box-of-doom'
+        "dice",
+        "rolls",
+        "dumpster",
+        "box-of-doom",
+        "gamblers"
     ]
     valid = False
     for word in keywords:
