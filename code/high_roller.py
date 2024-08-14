@@ -9,6 +9,7 @@ client = discord.Client(command_prefix='!', intents=intents)
 
 def channel_valid(message):
     keywords = [
+        'dnd',
         "dice",
         "rolls",
         "dumpster",
@@ -19,7 +20,6 @@ def channel_valid(message):
     for word in keywords:
         if word in message.channel.name: valid = True
     return valid
-
 
 @client.event
 async def on_ready():
