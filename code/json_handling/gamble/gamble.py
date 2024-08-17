@@ -1,14 +1,10 @@
-import discord
-from parsing.command_parser import CommandParser
-from computing.compute import Compute
-from json_handling import JsonHandling
-from discord.ext import commands
+from json_handling.json_handle import JsonHandle
 
 class Gamble:
     def __init__(self, message, c):
         self.message = message
         self.c = c
-        self.json_handler = JsonHandling(playername=message.author.name)
+        self.json_handler = JsonHandle(playername=message.author.name)
         self.even = False
 
     def update_gambling_state(self, gambling_state):

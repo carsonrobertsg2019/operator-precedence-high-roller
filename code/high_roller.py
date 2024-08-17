@@ -1,8 +1,8 @@
 import discord
 from parsing.command_parser import CommandParser
 from computing.compute import Compute
-from gambling.gamble import Gamble
-from json_handling import JsonHandling
+from json_handling.gamble.gamble import Gamble
+from json_handling.roll_persistence.roll_persistence import RollPersistence
 from discord.ext import commands
 intents = discord.Intents.all()
 client = discord.Client(command_prefix='!', intents=intents)
@@ -29,6 +29,7 @@ async def on_ready():
 async def on_message(message):
     c = Compute()
     gamble = Gamble(message, c)
+    rp = RollPersistence(message, c)
     g = gamble.gambling()
     if not channel_valid(message) and (message.content[0] == '!' or message.content in ['odds', 'evens']):
         await message.channel.send("https://tenor.com/view/blm-gif-25815938")
@@ -39,6 +40,8 @@ async def on_message(message):
         await gamble.determine_call()
         if not gamble.gambling():
             await gamble.determine_result()
+    elif '!h' in message.content.lower():
+        rp.get_rolls_from_json()
     elif len(message.content) > 0 and message.content[0] == '!':
         p = CommandParser(message.content)
         p.parse_init()
@@ -49,6 +52,7 @@ async def on_message(message):
             if c.error:
                 await message.channel.send('https://tenor.com/view/blm-gif-25815938')
             else:
+                rp.add_rolls_to_json()
                 to_send = ""
                 i = 0
                 for cock in c.cocked_rolls:

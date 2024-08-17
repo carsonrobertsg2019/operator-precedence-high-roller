@@ -1,6 +1,6 @@
 import json
 
-class JsonHandling:
+class JsonHandle:
     def __init__(self, playername = ""):
        with open('player_info.json', 'r') as openfile: self.player_info_object = json.load(openfile)
        self.add_player_if_unique(playername)
@@ -15,6 +15,16 @@ class JsonHandling:
             json_object = json.dumps(self.player_info_object, indent=2) 
             with open("player_info.json", "w") as outfile: outfile.write(json_object)
         pass
+
+    def add_roll(self, playername, die, roll, timestamp):
+        index = self.calc_index(playername)
+        self.player_info_object["players"][index]["rolls"].append({
+            "die": die, 
+            "roll": roll,
+            "timestamp": timestamp
+        })
+        json_object = json.dumps(self.player_info_object, indent=2) 
+        with open("player_info.json", "w") as outfile: outfile.write(json_object)
 
     def calc_index(self, playername):
         for i in range(len(self.player_info_object["players"])):
@@ -32,3 +42,7 @@ class JsonHandling:
             self.player_info_object["players"][index]["gambling"] = str(gambling)
         json_object = json.dumps(self.player_info_object, indent=2)
         with open("player_info.json", "w") as outfile: outfile.write(json_object)
+
+    def get_rolls(self, playername):
+        index = self.calc_index(playername)
+        return self.player_info_object["players"][index]["rolls"]

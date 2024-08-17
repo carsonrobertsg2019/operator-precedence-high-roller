@@ -7,6 +7,7 @@ class Compute:
         self.i = 0
         self.cocked_rolls = []
         self.all_lists_of_rolls = []
+        self.list_of_dice = []
         self.error = False
         self.cocked_odds = 0.025
     
@@ -24,6 +25,7 @@ class Compute:
                 self.cocked_rolls.append((random.randint(1, num_sides), self.i))
             roll = random.randint(1, num_sides)
             list_of_rolls.append(roll)
+            self.list_of_dice.append('d' + str(num_sides))
             rolled_total += roll
         self.all_lists_of_rolls.append(list_of_rolls)
         roll_avg = int((1+num_sides)/2*num_rolls)
