@@ -55,6 +55,7 @@ class JsonHandle:
         return self.player_info_object["players"][index]["rolls"]
     
     def clear_player_data(self):
-        self.player_info_object["players"].clear()
-        json_object = json.dumps(self.player_info_object, indent=2)
-        with open("player_info.json", "w") as outfile: outfile.write(json_object)
+        if self.message.author.name == 'kaczynskicore':
+            self.player_info_object["players"].clear()
+            json_object = json.dumps(self.player_info_object, indent=2)
+            with open("player_info.json", "w") as outfile: outfile.write(json_object)
