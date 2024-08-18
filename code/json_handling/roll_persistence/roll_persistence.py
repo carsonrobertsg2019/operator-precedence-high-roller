@@ -23,14 +23,19 @@ class RollPersistence:
                 )
                 i += 1
 
-    def get_rolls_from_json(self):
+    def get_rolls_from_json(self, seconds_to_subtract=43200, die_to_show="d20"):
         rolls = self.json_handler.get_rolls(self.message.author.name)
         recent_rolls = []
         for i in range(len(rolls)):
             ts = rolls[i]["timestamp"]
-            if ts > time.time() - 86400:
-                recent_rolls.append(rolls[i]["roll"])
-        ax = sns.barplot(x=np.arange(len(recent_rolls)), y=recent_rolls)
+            die = rolls[i]["die"]
+            if ts > time.time() - seconds_to_subtract and die == die_to_show:
+                recent_rolls.append(rolls[i])
+        results = [0]*20
+        for i in range(len(recent_rolls)):
+            results[recent_rolls[i]["roll"]-1] += 1
+        ax = sns.barplot(x=np.arange(1,21), y=results)
         ax.bar_label(ax.containers[0])
         plt.axis('off')
-        plt.show()
+        plt.savefig('bar_plots/bar_plot_' + self.message.author.name + '.png')
+        plt.clf()
