@@ -18,11 +18,18 @@ class JsonHandle:
 
     def add_roll(self, playername, die, roll, timestamp):
         index = self.calc_index(playername)
-        self.player_info_object["players"][index]["rolls"].append({
+        try:
+            self.player_info_object["players"][index]["rolls"].append({
             "die": die, 
             "roll": roll,
             "timestamp": timestamp
-        })
+            })
+        except:
+            self.player_info_object["players"][index]["rolls"] = [{
+            "die": die, 
+            "roll": roll,
+            "timestamp": timestamp
+            }]
         json_object = json.dumps(self.player_info_object, indent=2) 
         with open("player_info.json", "w") as outfile: outfile.write(json_object)
 
@@ -46,3 +53,8 @@ class JsonHandle:
     def get_rolls(self, playername):
         index = self.calc_index(playername)
         return self.player_info_object["players"][index]["rolls"]
+    
+    def clear_player_data(self):
+        self.player_info_object["players"].clear()
+        json_object = json.dumps(self.player_info_object, indent=2)
+        with open("player_info.json", "w") as outfile: outfile.write(json_object)
