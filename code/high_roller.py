@@ -1,6 +1,7 @@
 import discord
 from parsing.command_parser import CommandParser
 from computing.compute import Compute
+from json_handling.json_handle import JsonHandle
 from json_handling.gamble.gamble import Gamble
 from json_handling.roll_persistence.roll_persistence import RollPersistence
 intents = discord.Intents.all()
@@ -27,6 +28,7 @@ async def on_ready():
 @client.event
 async def on_message(message):
     c = Compute()
+    jh = JsonHandle(message.author.name)
     gamble = Gamble(message, c)
     rp = RollPersistence(message, c)
     g = gamble.gambling()
@@ -39,6 +41,8 @@ async def on_message(message):
         await gamble.determine_call()
         if not gamble.gambling():
             await gamble.determine_result()
+    elif '!c' in message.content.lower() and message.content[0] == '!':
+        jh.clear_player_data()
     elif '!h' in message.content.lower() and message.content[0] == '!':
         rp.get_rolls_from_json()
         await message.channel.send(file=discord.File('bar_plots/bar_plot_' + message.author.name + '.png'))
