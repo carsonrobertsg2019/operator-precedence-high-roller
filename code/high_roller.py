@@ -3,7 +3,6 @@ from parsing.command_parser import CommandParser
 from computing.compute import Compute
 from json_handling.gamble.gamble import Gamble
 from json_handling.roll_persistence.roll_persistence import RollPersistence
-from discord.ext import commands
 intents = discord.Intents.all()
 client = discord.Client(command_prefix='!', intents=intents)
 
@@ -40,8 +39,9 @@ async def on_message(message):
         await gamble.determine_call()
         if not gamble.gambling():
             await gamble.determine_result()
-    elif '!h' in message.content.lower():
+    elif '!h' in message.content.lower() and message.content[0] == '!':
         rp.get_rolls_from_json()
+        await message.channel.send(file=discord.File('bar_plots/bar_plot_' + message.author.name + '.png'))
     elif len(message.content) > 0 and message.content[0] == '!':
         p = CommandParser(message.content)
         p.parse_init()
