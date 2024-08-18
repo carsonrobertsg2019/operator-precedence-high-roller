@@ -43,7 +43,7 @@ async def on_message(message):
             await gamble.determine_result()
     elif '!c' in message.content.lower() and message.content[0] == '!':
         jh.clear_player_data()
-    elif '!h' in message.content.lower() and message.content[0] == '!':
+    elif '!h' == message.content.lower() and message.content[0] == '!':
         rp.get_rolls_from_json()
         await message.channel.send(file=discord.File('bar_plots/bar_plot_' + message.author.name + '.png'))
     elif len(message.content) > 0 and message.content[0] == '!':
