@@ -61,6 +61,7 @@ async def on_message(message):
                 i = 0
                 for cock in c.cocked_rolls:
                     to_send += "Honor the cock. Roll " + str(c.cocked_rolls[i][1]) + " was cocked. It would have been " + str(c.cocked_rolls[i][0]) + "\n"
+                    i += 1
                 to_send += str(result[0]) + '\nDetails: ' + str(c.all_lists_of_rolls) + "\nAverage: " + str(result[1])
                 if (len(to_send)) > 2000:
                     to_send_list = [(to_send[i:i+2000]) for i in range(0, len(to_send), 2000)]
