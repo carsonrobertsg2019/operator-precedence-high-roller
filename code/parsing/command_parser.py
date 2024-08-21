@@ -9,7 +9,6 @@ class CommandParser:
         self.input_string = input_string
         self.stack = self.initialize_stack()
         self.rhs: list[StackNode] = []
-        self.syntax_error = False
         self.lexer = LexicalAnalyzer(input_string)
         self.command_type = CommandType.ERROR
 
@@ -20,75 +19,97 @@ class CommandParser:
         return temp
 
     def define_operator_precedence_table(self):
+        """
+        R => Roll
+        N => Number
+        G => Gamble
+        B => Bet
+        H => Recall
+        $ => End Of File
+        """
         return [
-            ['?', '+', '-', '*', '/', '(', ')', 'R', 'N', '$', 'X'],
-            ['+', '>', '>', '<', '<', '<', '>', '<', '<', '>', 'X'],
-            ['-', '>', '>', '<', '<', '<', '>', '<', '<', '>', 'X'],
-            ['*', '>', '>', '>', '>', '<', '>', '<', '<', '>', 'X'],
-            ['/', '>', '>', '>', '>', '<', '>', '<', '<', '>', 'X'],
-            ['(', '<', '<', '<', '<', '<', '=', '<', '<', 'X', 'X'],
-            [')', '>', '>', '>', '>', 'X', '>', 'X', 'X', '>', 'X'],
-            ['R', '>', '>', '>', '>', 'X', '>', 'X', 'X', '>', 'X'],
-            ['N', '>', '>', '>', '>', 'X', '>', 'X', 'X', '>', 'X'],
-            ['$', '<', '<', '<', '<', '<', 'X', '<', '<', 'A', 'X'],
-            ['X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X']
+            ['?', '+', '-', '*', '/', '(', ')', ',', 'R', 'N', 'G', 'B', 'H', '$', 'X'],
+            ['+', '>', '>', '<', '<', '<', '>', 'X', '<', '<', 'X', 'X', 'X', '>', 'X'],
+            ['-', '>', '>', '<', '<', '<', '>', 'X', '<', '<', 'X', 'X', 'X', '>', 'X'],
+            ['*', '>', '>', '>', '>', '<', '>', 'X', '<', '<', 'X', 'X', 'X', '>', 'X'],
+            ['/', '>', '>', '>', '>', '<', '>', 'X', '<', '<', 'X', 'X', 'X', '>', 'X'],
+            ['(', '<', '<', '<', '<', '<', '=', 'X', '<', '<', 'X', 'X', 'X', 'X', 'X'],
+            [')', '>', '>', '>', '>', 'X', '>', 'X', 'X', 'X', 'X', 'X', 'X', '>', 'X'],
+            [',', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X'],
+            ['R', '>', '>', '>', '>', 'X', '>', 'X', 'X', 'X', 'X', 'X', 'X', '>', 'X'],
+            ['N', '>', '>', '>', '>', 'X', '>', 'X', 'X', 'X', 'X', 'X', 'X', '>', 'X'],
+            ['G', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X'],
+            ['B', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X'],
+            ['H', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X'],
+            ['$', '<', '<', '<', '<', '<', 'X', 'X', '<', '<', 'X', 'X', 'X', 'A', 'X'],
+            ['X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X']
         ]
 
     def expect(self, expected_type):
         token = self.lexer.get_token()
         if token.TokenType != expected_type:
             print('syntax error')
-            self.syntax_error = True
+            self.command_type = CommandType.ERROR
             return None
         return token
 
     def parse_init(self):
-        if self.lexer.peek().TokenType == TokenType.BET:
+        t = self.lexer.peek(1)
+        if t.TokenType == TokenType.BET:
             self.parse_bet()
-        elif self.lexer.peek().TokenType == TokenType.COMMAND_START:
-            self.parse_init()
-            if self.lexer.peek().TokenType == TokenType.GAMBLE:
-                self.expect(TokenType.GAMBLE)
-            elif self.lexer.peek().TokenType == TokenType.RECALL:
+        elif self.lexer.peek(1).TokenType == TokenType.COMMAND_START:
+            self.expect(TokenType.COMMAND_START)
+            if self.lexer.peek(1).TokenType == TokenType.GAMBLE:
+                self.parse_gamble()
+            elif self.lexer.peek(1).TokenType == TokenType.RECALL:
                 self.parse_recall()
-            elif self.lexer.peek().TokenType in [TokenType.ROLL, TokenType.NUM]:
+            elif self.lexer.peek(1).TokenType in [TokenType.LPAREN, 
+                                                  TokenType.ROLL, 
+                                                  TokenType.NUM]:
                 self.parse_expr()
         else:
             print('syntax error')
-        self.expect(TokenType.END_OF_FILE)
-    
-    def parse_bet(self):
-        new_node = StackNode()
-        self.command_type = CommandType.GAMBLE_BET
-        if self.lexer.peek().lexeme == 'odds':
-            new_node.token_info = self.expect(TokenType.BET)
-            self.stack.append(new_node)
-        elif self.lexer.peek().lexeme == 'evens':
-            self.expect(TokenType.BET)
-        else:
             self.command_type = CommandType.ERROR
-            print('syntax error')
+        self.expect(TokenType.END_OF_FILE)
 
-    def parse_recall(self):
+    def parse_bet(self):
+        self.command_type = CommandType.GAMBLE_BET
         new_node = StackNode()
-        self.command_type = CommandType.RECALL_ROLLS
-        self.expect(TokenType.RECALL)
-        if self.lexer.peek().TokenType == TokenType.LPAREN:
-            self.expect(TokenType.LPAREN)
-            if self.lexer.peek().TokenType == TokenType.NUM:
-                self.expect(TokenType.NUM)
-                if self.lexer.peek().TokenType == TokenType.COMMA:
-                    self.expect(TokenType.COMMA)
-                    self.expect(TokenType.ROLL)
-            elif self.lexer.peek().TokenType == TokenType.ROLL:
-                self.expect(TokenType.ROLL)
-            self.expect(TokenType.RPAREN)
+        new_node.token_info = self.expect(TokenType.BET)
+        self.stack.append(new_node)
 
     def parse_gamble(self):
-        new_node = StackNode()
         self.command_type = CommandType.GAMBLE_START
+        new_node = StackNode()
         new_node.token_info = self.expect(TokenType.GAMBLE)
         self.stack.append(new_node)
+
+    def parse_recall(self):
+        self.command_type = CommandType.RECALL_ROLLS
+        new_node = StackNode()
+        new_node.token_info = self.expect(TokenType.RECALL)
+        self.stack.append(new_node)
+        if self.lexer.peek(1).TokenType == TokenType.LPAREN:
+            new_node = StackNode()
+            new_node.token_info = self.expect(TokenType.LPAREN)
+            self.stack.append(new_node)
+            if self.lexer.peek(1).TokenType == TokenType.NUM:
+                new_node = StackNode()
+                new_node.token_info = self.expect(TokenType.NUM)
+                self.stack.append(new_node)
+                new_node = StackNode()
+                new_node.token_info = self.expect(TokenType.COMMA)
+                self.stack.append(new_node)
+                new_node = StackNode()
+                new_node.token_info = self.expect(TokenType.ROLL)
+                self.stack.append(new_node)
+            elif self.lexer.peek(1).TokenType == TokenType.ROLL:
+                new_node = StackNode()
+                new_node.token_info = self.expect(TokenType.ROLL)
+                self.stack.append(new_node)
+            new_node = StackNode()
+            new_node.token_info = self.expect(TokenType.RPAREN)
+            self.stack.append(new_node)
 
     def terminal_peek(self):
         if self.stack[-1].is_terminal: return self.stack[-1]
@@ -135,7 +156,7 @@ class CommandParser:
             return self.is_arithm_expr() or self.is_closed_par()
         else:
             print('syntax error')
-            self.syntax_error = True
+            self.command_type = CommandType.ERROR
             return None
 
     def reduce_roll_or_num(self):
@@ -196,7 +217,7 @@ class CommandParser:
             self.stack.append(new_node)
         else:
             print('syntax error')
-            self.syntax_error = True
+            self.command_type = CommandType.ERROR
             return None
 
     def more_expr_parsing(self):
@@ -206,6 +227,7 @@ class CommandParser:
         )
 
     def parse_expr(self):
+        self.command_type = CommandType.EXPR
         table = self.define_operator_precedence_table()
         while self.more_expr_parsing():
             t = self.lexer.peek(1)
@@ -217,5 +239,5 @@ class CommandParser:
                 self.reduce(table)
             else:
                 print('syntax error')
-                self.syntax_error = True
+                self.command_type = CommandType.ERROR
                 return None
