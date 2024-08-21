@@ -48,7 +48,7 @@ class CommandParser:
     def expect(self, expected_type):
         token = self.lexer.get_token()
         if token.TokenType != expected_type:
-            print('syntax error')
+            print('syntax error in ' + self.input_string)
             self.command_type = CommandType.ERROR
             return None
         return token
@@ -68,7 +68,7 @@ class CommandParser:
                                                   TokenType.NUM]:
                 self.parse_expr()
         else:
-            print('syntax error')
+            print('syntax error in ' + self.input_string)
             self.command_type = CommandType.ERROR
         self.expect(TokenType.END_OF_FILE)
 
@@ -155,7 +155,7 @@ class CommandParser:
         elif len(self.rhs) == 3:
             return self.is_arithm_expr() or self.is_closed_par()
         else:
-            print('syntax error')
+            print('syntax error in ' + self.input_string)
             self.command_type = CommandType.ERROR
             return None
 
@@ -216,7 +216,7 @@ class CommandParser:
             new_node = self.reduce_expr()
             self.stack.append(new_node)
         else:
-            print('syntax error')
+            print('syntax error in ' + self.input_string)
             self.command_type = CommandType.ERROR
             return None
 
@@ -238,6 +238,6 @@ class CommandParser:
             elif table[a][b] == '>':
                 self.reduce(table)
             else:
-                print('syntax error')
+                print('syntax error in ' + self.input_string)
                 self.command_type = CommandType.ERROR
                 return None

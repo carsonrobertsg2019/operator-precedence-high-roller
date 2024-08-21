@@ -14,6 +14,8 @@ def channel_valid(message):
 
 def message_is_command(message):
     return (
-        message.content[0] == '!' or 
-        message.content in ['odds', 'evens']
+        len(message.content) > 0 and (
+            message.content[0] == '!' or 
+            message.content in ['odds', 'evens']
+        )
     )
