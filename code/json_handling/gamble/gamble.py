@@ -13,7 +13,7 @@ class Gamble:
     def gambling(self):
         return self.json_handler.gambling(self.message.author.name)
 
-    async def determine_call(self):
+    async def determine_bet(self):
         if self.message.content.lower() == 'evens':
             self.even = True
             self.json_handler.update_json(self.message.author.name, False)

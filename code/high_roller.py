@@ -4,22 +4,9 @@ from computing.compute import Compute
 from json_handling.json_handle import JsonHandle
 from json_handling.gamble.gamble import Gamble
 from json_handling.roll_persistence.roll_persistence import RollPersistence
+import message_validator as mv
 intents = discord.Intents.all()
 client = discord.Client(command_prefix='!', intents=intents)
-
-def channel_valid(message):
-    keywords = [
-        'dnd',
-        "dice",
-        "rolls",
-        "dumpster",
-        "box-of-doom",
-        "gamblers"
-    ]
-    valid = False
-    for word in keywords:
-        if word in message.channel.name: valid = True
-    return valid
 
 @client.event
 async def on_ready():
@@ -31,14 +18,14 @@ async def on_message(message):
     jh = JsonHandle(message.author.name)
     gamble = Gamble(message, c)
     rp = RollPersistence(message, c)
-    g = gamble.gambling()
-    if not channel_valid(message) and (message.content[0] == '!' or message.content in ['odds', 'evens']):
+    p = CommandParser(message.content)
+    if not mv.channel_valid(message) and mv.message_is_command(message):
         await message.channel.send("https://tenor.com/view/blm-gif-25815938")
     elif message.content.lower() == '!gamble' and not gamble.gambling():
         await message.channel.send('odds or evens?')
         gamble.update_gambling_state(True)
     elif gamble.gambling() and message.author.name != 'High Roller':
-        await gamble.determine_call()
+        await gamble.determine_bet()
         if not gamble.gambling():
             await gamble.determine_result()
     elif '!c' in message.content.lower() and message.content[0] == '!':

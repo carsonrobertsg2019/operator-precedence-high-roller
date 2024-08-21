@@ -8,7 +8,11 @@ class TokenType(Enum):
     DIV = 4
     LPAREN = 5
     RPAREN = 6
-    ROLL = 7
-    NUM = 8
-    END_OF_FILE = 9
-    ERROR = 10
+    COMMA = 7
+    ROLL = 8
+    NUM = 9
+    GAMBLE = 10
+    BET = 11
+    RECALL = 12
+    END_OF_FILE = 13
+    ERROR = 14

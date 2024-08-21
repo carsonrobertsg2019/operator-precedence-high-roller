@@ -1,5 +1,6 @@
 from .lexical_analyzer import LexicalAnalyzer
-from .token_type import TokenType
+from .enums.token_type import TokenType
+from .enums.command_type import CommandType
 from .command_token import Token
 from parsing.stacknode import StackNode
 
@@ -10,6 +11,7 @@ class CommandParser:
         self.rhs: list[StackNode] = []
         self.syntax_error = False
         self.lexer = LexicalAnalyzer(input_string)
+        self.command_type = CommandType.ERROR
 
     def initialize_stack(self):
         temp = [StackNode()]
@@ -41,8 +43,52 @@ class CommandParser:
         return token
 
     def parse_init(self):
-        self.expect(TokenType.COMMAND_START)
-        self.parse_expr()
+        if self.lexer.peek().TokenType == TokenType.BET:
+            self.parse_bet()
+        elif self.lexer.peek().TokenType == TokenType.COMMAND_START:
+            self.parse_init()
+            if self.lexer.peek().TokenType == TokenType.GAMBLE:
+                self.expect(TokenType.GAMBLE)
+            elif self.lexer.peek().TokenType == TokenType.RECALL:
+                self.parse_recall()
+            elif self.lexer.peek().TokenType in [TokenType.ROLL, TokenType.NUM]:
+                self.parse_expr()
+        else:
+            print('syntax error')
+        self.expect(TokenType.END_OF_FILE)
+    
+    def parse_bet(self):
+        new_node = StackNode()
+        self.command_type = CommandType.GAMBLE_BET
+        if self.lexer.peek().lexeme == 'odds':
+            new_node.token_info = self.expect(TokenType.BET)
+            self.stack.append(new_node)
+        elif self.lexer.peek().lexeme == 'evens':
+            self.expect(TokenType.BET)
+        else:
+            self.command_type = CommandType.ERROR
+            print('syntax error')
+
+    def parse_recall(self):
+        new_node = StackNode()
+        self.command_type = CommandType.RECALL_ROLLS
+        self.expect(TokenType.RECALL)
+        if self.lexer.peek().TokenType == TokenType.LPAREN:
+            self.expect(TokenType.LPAREN)
+            if self.lexer.peek().TokenType == TokenType.NUM:
+                self.expect(TokenType.NUM)
+                if self.lexer.peek().TokenType == TokenType.COMMA:
+                    self.expect(TokenType.COMMA)
+                    self.expect(TokenType.ROLL)
+            elif self.lexer.peek().TokenType == TokenType.ROLL:
+                self.expect(TokenType.ROLL)
+            self.expect(TokenType.RPAREN)
+
+    def parse_gamble(self):
+        new_node = StackNode()
+        self.command_type = CommandType.GAMBLE_START
+        new_node.token_info = self.expect(TokenType.GAMBLE)
+        self.stack.append(new_node)
 
     def terminal_peek(self):
         if self.stack[-1].is_terminal: return self.stack[-1]
