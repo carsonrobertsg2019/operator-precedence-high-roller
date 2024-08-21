@@ -7,7 +7,7 @@ matplotlib.use('TkAgg',force=True)
 import matplotlib.pyplot as plt
 import time
 
-class RollPersistence:
+class RollSave:
     def __init__(self, message, c):
         self.message = message
         self.c = c
