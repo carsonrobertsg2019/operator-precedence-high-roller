@@ -13,13 +13,14 @@ class Gamble:
     def gambling(self):
         return self.json_handler.gambling(self.message.author.name)
 
-    async def determine_call(self):
-        if self.message.content.lower() == 'evens':
+    async def determine_bet(self, bet):
+        if bet == 'evens':
             self.even = True
-            self.json_handler.update_json(self.message.author.name, False)
-        elif self.message.content.lower() == 'odds':
+            return True
+        elif bet == 'odds':
             self.even = False
-            self.json_handler.update_json(self.message.author.name, False)
+            return True
+        return False
 
     async def determine_result(self):
         res = self.c.roll_die('d20')

@@ -1,5 +1,5 @@
 from .command_token import Token
-from .token_type import TokenType
+from .enums.token_type import TokenType
 from .input_buffer import InputBuffer
 
 class LexicalAnalyzer:
@@ -15,6 +15,7 @@ class LexicalAnalyzer:
         while token.TokenType != TokenType.END_OF_FILE:
             self.token_list.append(token)
             token = self.get_token_main()
+        pass
 
     def isspace(self, c):
         return (
@@ -97,6 +98,61 @@ class LexicalAnalyzer:
                 return self.scan_error(tmp, c)
         else:
             return self.scan_error(tmp, c)
+        
+    def scan_gamble(self):
+        tmp = Token()
+        tmp.lexeme = ""
+        c = self.input.get_char()
+        while(c in 'gamble'):
+            tmp.lexeme += c
+            c = self.input.get_char()
+        if tmp.lexeme == 'gamble':
+            tmp.TokenType = TokenType.GAMBLE
+            return tmp
+        else:
+            return self.scan_error(tmp, c)
+
+    def scan_odds(self, tmp:Token, c):
+        while(c in 'odds'):
+            tmp.lexeme += c
+            c = self.input.get_char()
+        if tmp.lexeme == 'odds':
+            tmp.TokenType = TokenType.BET
+            return tmp
+        else:
+            return self.scan_error(tmp, c)
+
+    def scan_evens(self, tmp, c):
+        while(c in 'evens'):
+            tmp.lexeme += c
+            c = self.input.get_char()
+        if tmp.lexeme == 'evens':
+            tmp.TokenType = TokenType.BET
+            return tmp
+        else:
+            return self.scan_error(tmp, c)
+        
+    def scan_bet(self):
+        tmp = Token()
+        tmp.lexeme = ""
+        c = self.input.get_char()
+        if c == 'o':
+            return self.scan_odds(tmp, c)
+        elif c == 'e':
+            return self.scan_evens(tmp, c)
+        else:
+            return self.scan_error(tmp, c)
+        
+    def scan_recall(self):
+        tmp = Token()
+        tmp.lexeme = ""
+        c = self.input.get_char()
+        if c == 'h':
+            tmp.lexeme += c
+            tmp.TokenType = TokenType.RECALL
+            return tmp
+        else:
+            return self.scan_error(tmp, c)
     
     def get_token(self):
         token = Token()
@@ -122,16 +178,16 @@ class LexicalAnalyzer:
             return self.token_list[peekIndex]
 
     def get_token_main(self):
-        c = None
+        c1 = None
         self.skip_space_and_escape_chars()
         tmp = Token()
         tmp.lexeme = ""
         tmp.TokenType = TokenType.END_OF_FILE
         if not self.input.end_of_input():
-            c = self.input.get_char()
+            c1 = self.input.get_char()
         else:
             return tmp
-        match c:
+        match c1:
             case '!': tmp.TokenType = TokenType.COMMAND_START
             case '+': tmp.TokenType = TokenType.PLUS
             case '-': tmp.TokenType = TokenType.MINUS
@@ -139,13 +195,33 @@ class LexicalAnalyzer:
             case '/': tmp.TokenType = TokenType.DIV
             case '(': tmp.TokenType = TokenType.LPAREN
             case ')': tmp.TokenType = TokenType.RPAREN
+            case ',': tmp.TokenType = TokenType.COMMA
             case _:
-                if self.isdigit(c):
-                    self.input.unget_char(c)
+                if self.isdigit(c1):
+                    self.input.unget_char(c1)
                     tmp = self.scan_number_or_roll()
-                elif c in ['d', 'e']:
-                    self.input.unget_char(c)
+                elif c1 == 'd':
+                    self.input.unget_char(c1)
                     tmp = self.scan_roll()
+                elif c1 == 'e':
+                    c2 = self.input.get_char()
+                    if c2 == 'v':
+                        self.input.unget_char(c2)
+                        self.input.unget_char(c1)
+                        tmp = self.scan_bet()
+                    else:
+                        self.input.unget_char(c2)
+                        self.input.unget_char(c1)
+                        tmp = self.scan_roll()
+                elif c1 == 'o':
+                    self.input.unget_char(c1)
+                    tmp = self.scan_bet()
+                elif c1 == 'g':
+                    self.input.unget_char(c1)
+                    tmp = self.scan_gamble()
+                elif c1 == 'h':
+                    self.input.unget_char(c1)
+                    tmp = self.scan_recall()
                 else:
                     tmp.TokenType = TokenType.ERROR
         return tmp
