@@ -7,6 +7,7 @@ from json_handling.roll_saving.roll_save import RollSave
 import message_validator as mv
 intents = discord.Intents.all()
 client = discord.Client(command_prefix='!', intents=intents)
+testing_messages = True
 
 async def handle_expr(message: discord.Message, compute: Compute, rollSave: RollSave, commandParser: CommandParser):
     result = compute.compute_expr(commandParser.stack[1])
@@ -66,16 +67,17 @@ async def on_message(message: discord.Message):
         commandParser.parse_init()
         match commandParser.command_type:
             case CommandType.EXPR:
-                handle_expr(message, compute, rollSave, commandParser)
+                await handle_expr(message, compute, rollSave, commandParser)
             case CommandType.GAMBLE_START:
-                handle_gamble_start(message, gamble)
+                await handle_gamble_start(message, gamble)
             case CommandType.GAMBLE_BET:
-                handle_gamble_bet(gamble, commandParser)
+                await handle_gamble_bet(gamble, commandParser)
             case CommandType.RECALL_ROLLS:
-                handle_recall_rolls(message, rollSave, commandParser)
+                await handle_recall_rolls(message, rollSave, commandParser)
             case CommandType.ERROR:
-                handle_error(message)
+                await handle_error(message)
             case _:
                 pass
+
 with open('BOT-KEY', 'r') as file: bot_key = file.read().rstrip()
 client.run(bot_key)
