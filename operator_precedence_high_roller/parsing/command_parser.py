@@ -2,7 +2,7 @@ from .lexical_analyzer import LexicalAnalyzer
 from .enums.token_type import TokenType
 from .enums.command_type import CommandType
 from .command_token import Token
-from parsing.stacknode import StackNode
+from .stacknode import StackNode
 
 class CommandParser:
     def __init__(self, input_string):
@@ -11,6 +11,7 @@ class CommandParser:
         self.rhs: list[StackNode] = []
         self.lexer = LexicalAnalyzer(input_string)
         self.command_type = CommandType.ERROR
+        print(self.input_string)
 
     def initialize_stack(self):
         temp = [StackNode()]

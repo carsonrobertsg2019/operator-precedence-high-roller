@@ -1,4 +1,4 @@
-from json_handling.json_handle import JsonHandle
+from operator_precedence_high_roller.json_handling.json_handle import JsonHandle
 
 class Gamble:
     def __init__(self, message, c):

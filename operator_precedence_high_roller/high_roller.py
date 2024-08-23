@@ -1,10 +1,16 @@
-"""import discord
-from parsing.command_parser import CommandParser
-from parsing.enums.command_type import CommandType
-from computing.compute import Compute
-from json_handling.gambling.gamble import Gamble
-from json_handling.roll_saving.roll_save import RollSave
-import message_validator as mv
+import discord
+import pathlib
+import sys
+import os
+ROOT_PATH = pathlib.Path(__file__).parents[1]
+sys.path.append(os.path.join(ROOT_PATH, ''))
+print(sys.path)
+from operator_precedence_high_roller.parsing.command_parser import CommandParser
+from operator_precedence_high_roller.parsing.enums.command_type import CommandType
+from operator_precedence_high_roller.computing.compute import Compute
+from operator_precedence_high_roller.json_handling.gambling.gamble import Gamble
+from operator_precedence_high_roller.json_handling.roll_saving.roll_save import RollSave
+import operator_precedence_high_roller.message_validator as mv
 intents = discord.Intents.all()
 client = discord.Client(command_prefix='!', intents=intents)
 
@@ -77,9 +83,7 @@ async def on_message(message: discord.Message):
             case CommandType.ERROR:
                 await handle_error(message)
             case _:
-                pass"""
+                pass
 
-"""with open('BOT-KEY', 'r') as file: bot_key = file.read().rstrip()
-client.run(bot_key)"""
-
-print("hehe")
+with open('BOT-KEY', 'r') as file: bot_key = file.read().rstrip()
+client.run(bot_key)

@@ -1,8 +1,9 @@
-import pathlib, sys, os
+import pathlib
+import sys
+import os
 ROOT_PATH = pathlib.Path(__file__).parents[2]
-sys.path.append(os.path.join(ROOT_PATH, 'src'))
-print(sys.path)
-from operator_precedence_high_roller_bot import high_roller
+sys.path.append(os.path.join(ROOT_PATH, ''))
+from operator_precedence_high_roller import high_roller
 
 """class TestHandleGambleStart(IsolatedAsyncioTestCase):
     async def test_not_gambling_true(self):

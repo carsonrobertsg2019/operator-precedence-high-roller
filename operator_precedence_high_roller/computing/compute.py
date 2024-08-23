@@ -1,5 +1,5 @@
-from parsing.stacknode import StackNode
-from parsing.enums.token_type import TokenType
+from operator_precedence_high_roller.parsing.stacknode import StackNode
+from operator_precedence_high_roller.parsing.enums.token_type import TokenType
 import random
 
 class Compute:
@@ -28,7 +28,7 @@ class Compute:
             rolled_total += roll
         self.all_lists_of_rolls.append(list_of_rolls)
         roll_avg = int((1+num_sides)/2*num_rolls)
-        self.list_of_dice.append(str(num_rolls) + 'd' + str(num_sides))
+        self.list_of_dice.append(('' if num_rolls == 1 else str(num_rolls)) + 'd' + str(num_sides))
         return (rolled_total, roll_avg)
     
     def roll_exploding_die(self, to_roll):

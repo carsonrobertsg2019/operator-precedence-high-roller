@@ -13,7 +13,7 @@ Command => '!' [RECALL]
 
 EXPR => [EXPR] '+' [EXPR]
 EXPR => [EXPR] '-' [EXPR]
-EXPR => [EXPR] '\_' [EXPR]
+EXPR => [EXPR] '\*' [EXPR]
 EXPR => [EXPR] '/' [EXPR]
 EXPR => '(' [EXPR] ')'
 EXPR => [NUM]
@@ -29,3 +29,8 @@ BET => 'evens'
 
 RECALL => 'h'
 RECALL => 'h' '(' [NUM] ',' [ROLL] ')'
+
+Version history -
+1.1.1 - doesn't actually work
+1.1.2 - everything except RECALL commands works
+1.1.3 - now everything works like it should
