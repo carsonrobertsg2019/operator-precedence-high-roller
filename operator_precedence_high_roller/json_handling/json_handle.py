@@ -1,11 +1,12 @@
 import json
+import datetime
 
 class JsonHandle:
-    def __init__(self, playername = ""):
+    def __init__(self, playername: str):
        with open('player_info.json', 'r') as openfile: self.player_info_object = json.load(openfile)
        self.add_player_if_unique(playername)
 
-    def add_player_if_unique(self, playername):
+    def add_player_if_unique(self, playername: str):
         unique = True
         for i in range(len(self.player_info_object["players"])):
             if self.player_info_object["players"][i]["username"] == playername:
@@ -16,7 +17,7 @@ class JsonHandle:
             with open("player_info.json", "w") as outfile: outfile.write(json_object)
         pass
 
-    def add_roll(self, playername, die, roll, timestamp):
+    def add_roll(self, playername: str, die: str, roll: int, timestamp: datetime.datetime):
         index = self.calc_index(playername)
         try:
             self.player_info_object["players"][index]["rolls"].append({
@@ -33,29 +34,23 @@ class JsonHandle:
         json_object = json.dumps(self.player_info_object, indent=2) 
         with open("player_info.json", "w") as outfile: outfile.write(json_object)
 
-    def calc_index(self, playername):
+    def calc_index(self, playername: str):
         for i in range(len(self.player_info_object["players"])):
             if self.player_info_object["players"][i]["username"] == playername: 
                 return i
         else: return None
 
-    def gambling(self, playername):
+    def gambling(self, playername: str):
         index = self.calc_index(playername)
         return self.player_info_object["players"][index]["gambling"] == "True"
 
-    def update_json(self, playername, gambling = None):
+    def update_json(self, playername: str, gambling: bool):
         index = self.calc_index(playername)
         if (gambling != None):
             self.player_info_object["players"][index]["gambling"] = str(gambling)
         json_object = json.dumps(self.player_info_object, indent=2)
         with open("player_info.json", "w") as outfile: outfile.write(json_object)
 
-    def get_rolls(self, playername):
+    def get_rolls(self, playername: str):
         index = self.calc_index(playername)
         return self.player_info_object["players"][index]["rolls"]
-    
-    def clear_player_data(self):
-        if self.message.author.name == 'kaczynskicore':
-            self.player_info_object["players"].clear()
-            json_object = json.dumps(self.player_info_object, indent=2)
-            with open("player_info.json", "w") as outfile: outfile.write(json_object)

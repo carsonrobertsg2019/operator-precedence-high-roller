@@ -11,7 +11,7 @@ class Compute:
         self.error = False
         self.cocked_odds = 0.025
     
-    def roll_die(self, to_roll):
+    def roll_die(self, to_roll: str):
         num_rolls = int(to_roll[:to_roll.index('d')]) if to_roll[:to_roll.index('d')] != '' else 1
         num_sides = int(to_roll[to_roll.index('d')+1:])
         if num_rolls > 1000 or num_rolls > 10000:
@@ -31,7 +31,7 @@ class Compute:
         self.list_of_dice.append(('' if num_rolls == 1 else str(num_rolls)) + 'd' + str(num_sides))
         return (rolled_total, roll_avg)
     
-    def roll_exploding_die(self, to_roll):
+    def roll_exploding_die(self, to_roll: str):
         num_rolls = int(to_roll[:to_roll.index('e')]) if to_roll[:to_roll.index('e')] != '' else 1
         num_sides = int(to_roll[to_roll.index('e')+1:])
         if num_rolls > 1000 or num_sides > 10000:

@@ -6,9 +6,11 @@ import matplotlib
 matplotlib.use('TkAgg',force=True)
 import matplotlib.pyplot as plt
 import time
+from operator_precedence_high_roller.computing.compute import Compute
+import discord
 
 class RollSave:
-    def __init__(self, message, c):
+    def __init__(self, message: discord.Message, c: Compute):
         self.message = message
         self.c = c
         self.json_handler = JsonHandle(playername=message.author.name)
@@ -27,7 +29,7 @@ class RollSave:
             )
             i += 1
 
-    def get_rolls_from_json(self, hours_to_subtract=12, die_to_show="d20"):
+    def get_rolls_from_json(self, hours_to_subtract:int=12, die_to_show:str="d20"):
         rolls = self.json_handler.get_rolls(self.message.author.name)
         recent_rolls = []
         for i in range(len(rolls)):

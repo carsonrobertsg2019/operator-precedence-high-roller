@@ -1,19 +1,21 @@
 from operator_precedence_high_roller.json_handling.json_handle import JsonHandle
+from operator_precedence_high_roller.computing.compute import Compute
+import discord
 
 class Gamble:
-    def __init__(self, message, c):
+    def __init__(self, message: discord.Message, c: Compute):
         self.message = message
         self.c = c
         self.json_handler = JsonHandle(playername=message.author.name)
         self.even = False
 
-    def update_gambling_state(self, gambling_state):
+    def update_gambling_state(self, gambling_state: bool):
         self.json_handler.update_json(self.message.author.name, gambling_state)
 
     def gambling(self):
         return self.json_handler.gambling(self.message.author.name)
 
-    async def determine_bet(self, bet):
+    async def determine_bet(self, bet: str):
         if bet == 'evens':
             self.even = True
             return True

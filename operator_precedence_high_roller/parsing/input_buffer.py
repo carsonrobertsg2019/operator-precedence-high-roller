@@ -1,5 +1,5 @@
 class InputBuffer:
-    def __init__(self, input_string):
+    def __init__(self, input_string: str):
         self.input_string = input_string
         self.eof = False
         self.input_buffer = []
@@ -10,7 +10,9 @@ class InputBuffer:
         else:
             return self.eof
         
-    def unget_char(self, c):
+    def unget_char(self, c: str):
+        if len(c) > 1:
+            raise TypeError("input c in unget_char was given" + c + "instead of a char value.")
         if (c != '$'):
             self.input_buffer.append(c)
     

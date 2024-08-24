@@ -11,7 +11,6 @@ class CommandParser:
         self.rhs: list[StackNode] = []
         self.lexer = LexicalAnalyzer(input_string)
         self.command_type = CommandType.ERROR
-        print(self.input_string)
 
     def initialize_stack(self):
         temp = [StackNode()]

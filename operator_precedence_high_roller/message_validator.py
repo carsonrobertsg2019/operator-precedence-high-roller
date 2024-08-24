@@ -1,4 +1,5 @@
-def channel_valid(message):
+import discord
+def channel_valid(message: discord.Message):
     keywords = [
         'dnd',
         "dice",
@@ -12,7 +13,7 @@ def channel_valid(message):
         if word in message.channel.name: valid = True
     return valid
 
-def message_is_command(message):
+def message_is_command(message: discord.Message):
     return (
         len(message.content) > 0 and (
             message.content[0] == '!' or 

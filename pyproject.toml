@@ -4,13 +4,13 @@ build-backend = "hatchling.build"
 
 [project]
 name = "operator_precedence_high_roller"
-version = "1.1.3"
+version = "1.1.4"
 authors = [
   { name="Jade Roberts", email="jaderobertsg2019@gmail.com" },
 ]
 description = "A small example package"
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.8"
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
