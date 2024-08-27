@@ -54,7 +54,7 @@ class LexicalAnalyzer:
         tmp.TokenType = TokenType.ERROR
         return tmp
     
-    def scan_num_sides(self, tmp, c):
+    def scan_num_sides(self, tmp: Token, c):
         while not self.input.end_of_input() and self.isdigit(c):
             tmp.lexeme += c
             c = self.input.get_char()

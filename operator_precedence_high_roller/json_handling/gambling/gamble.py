@@ -3,9 +3,9 @@ from operator_precedence_high_roller.computing.compute import Compute
 import discord
 
 class Gamble:
-    def __init__(self, message: discord.Message, c: Compute):
+    def __init__(self, message: discord.Message):
         self.message = message
-        self.c = c
+        self.c = Compute()
         self.json_handler = JsonHandle(playername=message.author.name)
         self.even = False
 

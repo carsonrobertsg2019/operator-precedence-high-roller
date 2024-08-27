@@ -5,11 +5,10 @@ ROOT_PATH = pathlib.Path(__file__).parents[2]
 sys.path.append(os.path.join(ROOT_PATH, ''))
 from operator_precedence_high_roller import high_roller
 from operator_precedence_high_roller.json_handling.gambling.gamble import Gamble
-from operator_precedence_high_roller.computing.compute import Compute
 from operator_precedence_high_roller.parsing.command_parser import CommandParser
-from mock_classes.mock_message_attributes.mock_author import MockAuthor
-from mock_classes.mock_message_attributes.mock_channel import MockChannel
-from mock_classes.mock_message import MockMessage
+from tests.mock_classes.mock_message_attributes.mock_author import MockAuthor
+from tests.mock_classes.mock_message_attributes.mock_channel import MockChannel
+from tests.mock_classes.mock_message import MockMessage
 from unittest import IsolatedAsyncioTestCase
 
 class TestHandleGambleStart(IsolatedAsyncioTestCase):
@@ -17,8 +16,7 @@ class TestHandleGambleStart(IsolatedAsyncioTestCase):
         self.author = MockAuthor(name = 'test_1234')
         self.channel = MockChannel(name = 'rolls_test_1234')
         self.message = MockMessage(self.author, self.channel, '!gamble')
-        self.compute = Compute()
-        self.gamble = Gamble(self.message, self.compute)
+        self.gamble = Gamble(self.message)
         self.commandParser = CommandParser(self.message.content)
         self.commandParser.parse_init()
 
