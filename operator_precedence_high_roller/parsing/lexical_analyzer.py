@@ -106,13 +106,14 @@ class LexicalAnalyzer:
         while(c in 'gamble'):
             tmp.lexeme += c
             c = self.input.get_char()
+        self.input.unget_char(c)
         if tmp.lexeme == 'gamble':
             tmp.TokenType = TokenType.GAMBLE
             return tmp
         else:
             return self.scan_error(tmp, c)
 
-    def scan_odds(self, tmp:Token, c):
+    def scan_odds(self, tmp: Token, c):
         while(c in 'odds'):
             tmp.lexeme += c
             c = self.input.get_char()
@@ -122,7 +123,7 @@ class LexicalAnalyzer:
         else:
             return self.scan_error(tmp, c)
 
-    def scan_evens(self, tmp, c):
+    def scan_evens(self, tmp: Token, c):
         while(c in 'evens'):
             tmp.lexeme += c
             c = self.input.get_char()
