@@ -17,7 +17,7 @@ class Compute:
             num_sides = int(to_roll[to_roll.index('d')+1:])
         except:
             return (0,0)
-        if num_rolls > 1000 or num_rolls > 10000:
+        if num_rolls > 1000 or num_sides > 10000:
             self.error = True
             return (0 ,0)
         rolled_total = 0
