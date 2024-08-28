@@ -12,11 +12,14 @@ class Compute:
         self.cocked_odds = 0.025
     
     def roll_die(self, to_roll: str):
-        num_rolls = int(to_roll[:to_roll.index('d')]) if to_roll[:to_roll.index('d')] != '' else 1
-        num_sides = int(to_roll[to_roll.index('d')+1:])
+        try:
+            num_rolls = int(to_roll[:to_roll.index('d')]) if to_roll[:to_roll.index('d')] != '' else 1
+            num_sides = int(to_roll[to_roll.index('d')+1:])
+        except:
+            return (0,0)
         if num_rolls > 1000 or num_rolls > 10000:
             self.error = True
-            return 0
+            return (0 ,0)
         rolled_total = 0
         list_of_rolls = []
         for i in range(num_rolls):
