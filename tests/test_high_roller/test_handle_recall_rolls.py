@@ -16,7 +16,7 @@ from mock import patch
 
 class TestHandleRecallRolls(IsolatedAsyncioTestCase):
     def setUp(self):
-        self.author = MockAuthor(name = 'seelieazul')
+        self.author = MockAuthor(name = 'jaderton')
         self.channel = MockChannel(name = 'rolls_test_1234')
 
     async def test_basic_recall(self):
@@ -29,6 +29,7 @@ class TestHandleRecallRolls(IsolatedAsyncioTestCase):
         with patch.object(self.rollSave, 'get_rolls_from_json') as mock:
             await high_roller.handle_recall_rolls(self.message, self.rollSave, self.commandParser)
         mock.assert_called_with()
+        self.assertEqual(await high_roller.handle_recall_rolls(self.message, self.rollSave, self.commandParser), None)
 
     async def test_specific_input_recall(self):
         self.message = MockMessage(self.author, self.channel, '!h(24, d20)')
@@ -39,7 +40,8 @@ class TestHandleRecallRolls(IsolatedAsyncioTestCase):
         self.commandParser.parse_init()
         with patch.object(self.rollSave, 'get_rolls_from_json') as mock:
             await high_roller.handle_recall_rolls(self.message, self.rollSave, self.commandParser)
-        mock.assert_called_with(24, 'd20')
+        mock.assert_called_with(hours = 24, die = 'd20')
+        self.assertEqual(await high_roller.handle_recall_rolls(self.message, self.rollSave, self.commandParser), None)
 
     async def test_invalid_recall_message(self):
         self.message = MockMessage(self.author, self.channel, '!hh')
@@ -51,3 +53,4 @@ class TestHandleRecallRolls(IsolatedAsyncioTestCase):
         with patch.object(high_roller, 'handle_error') as mock:
             await high_roller.handle_recall_rolls(self.message, self.rollSave, self.commandParser)
         mock.assert_called_with(self.message)
+        self.assertEqual(await high_roller.handle_recall_rolls(self.message, self.rollSave, self.commandParser), None)

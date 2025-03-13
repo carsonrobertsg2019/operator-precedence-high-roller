@@ -27,6 +27,7 @@ class TestHandleExpr(IsolatedAsyncioTestCase):
         with patch.object(high_roller, 'handle_error') as mock:
             await high_roller.handle_expr(self.message, self.compute, self.rollSave, self.commandParser)
         mock.assert_called_with(self.message)
+        self.assertEqual(await high_roller.handle_expr(self.message, self.compute, self.rollSave, self.commandParser), None)
 
     async def test_compute_error(self):
         self.message = MockMessage(self.author, self.channel, '!d20/0')
@@ -36,6 +37,7 @@ class TestHandleExpr(IsolatedAsyncioTestCase):
         with patch.object(high_roller, 'handle_error') as mock:
             await high_roller.handle_expr(self.message, self.compute, self.rollSave, self.commandParser)
         mock.assert_called_with(self.message)
+        self.assertEqual(await high_roller.handle_expr(self.message, self.compute, self.rollSave, self.commandParser), None)
 
     async def test_message_too_long(self):
         self.message = MockMessage(self.author, self.channel, '!1000d1000')
@@ -45,6 +47,7 @@ class TestHandleExpr(IsolatedAsyncioTestCase):
         with patch.object(high_roller, 'handle_error') as mock:
             await high_roller.handle_expr(self.message, self.compute, self.rollSave, self.commandParser)
         mock.assert_called_with(self.message)
+        self.assertEqual(await high_roller.handle_expr(self.message, self.compute, self.rollSave, self.commandParser), None)
 
     async def test_no_cocked_rolls(self):
         self.message = MockMessage(self.author, self.channel, '!d1')
@@ -55,6 +58,7 @@ class TestHandleExpr(IsolatedAsyncioTestCase):
         with patch.object(self.message.channel, 'send') as mock:
             await high_roller.handle_expr(self.message, self.compute, self.rollSave, self.commandParser)
         mock.assert_called_with('1\nDetails: ' + str(self.compute.all_lists_of_rolls) + '\nAverage: 1')
+        self.assertEqual(await high_roller.handle_expr(self.message, self.compute, self.rollSave, self.commandParser), None)
 
     async def test_1_cocked_roll(self):
         self.message = MockMessage(self.author, self.channel, '!d1')
@@ -65,3 +69,4 @@ class TestHandleExpr(IsolatedAsyncioTestCase):
         with patch.object(self.message.channel, 'send') as mock:
             await high_roller.handle_expr(self.message, self.compute, self.rollSave, self.commandParser)
         mock.assert_called_with('Honor the cock. Roll 1 was cocked. It would have been 1\n1\nDetails: ' + str(self.compute.all_lists_of_rolls) + '\nAverage: 1')
+        self.assertEqual(await high_roller.handle_expr(self.message, self.compute, self.rollSave, self.commandParser), None)

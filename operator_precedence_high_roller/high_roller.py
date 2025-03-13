@@ -54,10 +54,15 @@ async def handle_recall_rolls(message: discord.Message, rollSave: RollSave, comm
     elif len(commandParser.stack) == 2 and commandParser.stack[1].token_info.TokenType == TokenType.RECALL:
         rollSave.get_rolls_from_json()
         await message.channel.send(file=discord.File('bar_plots/bar_plot_' + message.author.name + '.png'))
+    elif len(commandParser.stack) == 5:
+        rollSave.get_rolls_from_json(
+            die = commandParser.stack[3].token_info.lexeme
+        )
+        await message.channel.send(file=discord.File('bar_plots/bar_plot_' + message.author.name + '.png'))
     elif len(commandParser.stack) == 7:
         rollSave.get_rolls_from_json(
-            int(commandParser.stack[3].token_info.lexeme), 
-            commandParser.stack[5].token_info.lexeme
+            hours = int(commandParser.stack[3].token_info.lexeme), 
+            die = commandParser.stack[5].token_info.lexeme
         )
         await message.channel.send(file=discord.File('bar_plots/bar_plot_' + message.author.name + '.png'))
     else:
@@ -95,5 +100,5 @@ async def on_message(message: discord.Message):
                 pass
             
 with open('BOT-KEY', 'r') as file: bot_key = file.read().rstrip()
-client.run(bot_key)    
-#python -m operator_precedence_high_roller.high_roller
+client.run(bot_key) 
+#python -m unittest discover tests

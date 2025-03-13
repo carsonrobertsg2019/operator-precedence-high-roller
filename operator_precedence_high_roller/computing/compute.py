@@ -35,11 +35,14 @@ class Compute:
         return (rolled_total, roll_avg)
     
     def roll_exploding_die(self, to_roll: str):
-        num_rolls = int(to_roll[:to_roll.index('e')]) if to_roll[:to_roll.index('e')] != '' else 1
-        num_sides = int(to_roll[to_roll.index('e')+1:])
+        try:
+            num_rolls = int(to_roll[:to_roll.index('e')]) if to_roll[:to_roll.index('e')] != '' else 1
+            num_sides = int(to_roll[to_roll.index('e')+1:])
+        except:
+            return (0,0)
         if num_rolls > 1000 or num_sides > 10000:
             self.error = True
-            return 0
+            return (0,0)
         rolled_total = 0
         list_of_rolls = []
         for i in range(num_rolls):
@@ -56,11 +59,15 @@ class Compute:
         roll_avg = 0
         for i in range(num_sides):
             roll_avg += (i + 1)
-        roll_avg = int(roll_avg/(num_sides-1)*num_rolls)
+        if num_sides > 1:
+            roll_avg = int(roll_avg/(num_sides-1)*num_rolls)
+        else:
+            roll_avg = 1
         self.all_lists_of_rolls.append(list_of_rolls)
+        self.list_of_dice.append(('' if num_rolls == 1 else str(num_rolls)) + 'e' + str(num_sides))
         return (rolled_total, roll_avg)
     
-    def compute_expr(self, reduced_expr: StackNode):
+    def compute_expr(self, reduced_expr: StackNode): #this function is getting chunky. time to find ways to compress it
         if reduced_expr.oper == TokenType.PLUS:
             res_left = self.compute_expr(reduced_expr.left)
             left_expr = (res_left[0], res_left[1])

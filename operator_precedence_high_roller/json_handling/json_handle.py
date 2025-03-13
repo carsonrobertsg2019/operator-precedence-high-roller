@@ -1,10 +1,15 @@
 import json
 import datetime
-
+#I can't tell how to make unit tests for this stuff
 class JsonHandle:
     def __init__(self, playername: str):
-       with open('player_info.json', 'r') as openfile: self.player_info_object = json.load(openfile)
-       self.add_player_if_unique(playername)
+        try:
+            with open('player_info.json', 'r') as openfile: self.player_info_object = json.load(openfile)
+            self.add_player_if_unique(playername)
+        except:
+            newfile = {"players": []}
+            with open("player_info.json", "w") as json_file:
+                json.dump(newfile, json_file)
 
     def add_player_if_unique(self, playername: str):
         unique = True
@@ -53,4 +58,7 @@ class JsonHandle:
 
     def get_rolls(self, playername: str):
         index = self.calc_index(playername)
-        return self.player_info_object["players"][index]["rolls"]
+        try:
+            return self.player_info_object["players"][index]["rolls"]
+        except:
+            return None

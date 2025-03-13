@@ -19,11 +19,10 @@ class InputBuffer:
     def get_char(self):
         if self.input_buffer:
             return self.input_buffer.pop()
+        elif(len(self.input_string) > 0):
+            c = self.input_string[0]
+            self.input_string = self.input_string[1:len(self.input_string)]
+            return c
         else:
-            try:
-                c = self.input_string[0]
-                self.input_string = self.input_string[1:len(self.input_string)]
-                return c
-            except:
-                self.eof = True
-                return '$'
+            self.eof = True
+            return '$'

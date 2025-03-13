@@ -3,7 +3,7 @@ from .enums.token_type import TokenType
 from .input_buffer import InputBuffer
 
 class LexicalAnalyzer:
-    def __init__(self, input_string):
+    def __init__(self, input_string: str):
         self.input_string = input_string
         self.token_list = []
         self.index = 0

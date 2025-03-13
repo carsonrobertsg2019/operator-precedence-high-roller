@@ -57,7 +57,7 @@ class CommandParser:
         t = self.lexer.peek(1)
         if t.TokenType == TokenType.BET:
             self.parse_bet()
-        elif self.lexer.peek(1).TokenType == TokenType.COMMAND_START:
+        elif t.TokenType == TokenType.COMMAND_START:
             self.expect(TokenType.COMMAND_START)
             if self.lexer.peek(1).TokenType == TokenType.GAMBLE:
                 self.parse_gamble()
@@ -107,6 +107,10 @@ class CommandParser:
                 new_node = StackNode()
                 new_node.token_info = self.expect(TokenType.ROLL)
                 self.stack.append(new_node)
+            else:
+                print('syntax error in ' + self.input_string)
+                self.command_type = CommandType.ERROR
+                return None
             new_node = StackNode()
             new_node.token_info = self.expect(TokenType.RPAREN)
             self.stack.append(new_node)
@@ -174,6 +178,8 @@ class CommandParser:
             return TokenType.MULT
         if self.rhs[1].token_info.TokenType == TokenType.DIV:
             return TokenType.DIV
+        else:
+            return TokenType.ERROR
 
     def reduce_arithm_expr(self):
         new_node = StackNode()
@@ -200,22 +206,29 @@ class CommandParser:
         new_node.token_info = self.lexer.get_token()
         self.stack.append(new_node)
         
-    def reduce(self, table):
-        self.rhs = []
-        last_popped_terminal = self.null_token()
-        while True:
-            s = self.stack.pop()
-            if s.is_terminal:
-                last_popped_terminal = s.token_info
-            self.rhs.append(s)
-            a = self.terminal_peek().token_info.TokenType.value
-            b = last_popped_terminal.TokenType.value
-            if self.stack[-1].is_terminal and table[a][b] == '<':
-                break
-        if self.is_valid_expr():
-            new_node = self.reduce_expr()
-            self.stack.append(new_node)
-        else:
+    def reduce(self):
+        try:
+            table = self.define_operator_precedence_table()
+            self.rhs = []
+            last_popped_terminal = self.null_token()
+            while True:
+                s = self.stack.pop()
+                if s.is_terminal:
+                    last_popped_terminal = s.token_info
+                self.rhs.append(s)
+                a = self.terminal_peek().token_info.TokenType.value
+                b = last_popped_terminal.TokenType.value
+                if self.stack[-1].is_terminal and table[a][b] == '<':
+                    break
+            if self.is_valid_expr():
+                new_node = self.reduce_expr()
+                print()
+                self.stack.append(new_node)
+            else:
+                print('syntax error in ' + self.input_string)
+                self.command_type = CommandType.ERROR
+                return None
+        except:
             print('syntax error in ' + self.input_string)
             self.command_type = CommandType.ERROR
             return None
@@ -236,7 +249,7 @@ class CommandParser:
             if table[a][b] in ['<', '=']:
                 self.shift()
             elif table[a][b] == '>':
-                self.reduce(table)
+                self.reduce()
             else:
                 print('syntax error in ' + self.input_string)
                 self.command_type = CommandType.ERROR
