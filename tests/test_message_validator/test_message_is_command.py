@@ -8,7 +8,7 @@ from tests.mock_classes.mock_message_attributes.mock_author import MockAuthor
 from tests.mock_classes.mock_message import MockMessage
 import unittest
 
-"""class TestMessageIsCommand(unittest.TestCase):
+class TestMessageIsCommand(unittest.TestCase):
     def setUp(self):
         self.author = MockAuthor(name = 'test_1234')
 
@@ -30,4 +30,4 @@ import unittest
 
     def test_noncommand(self):
         self.message = MockMessage(self.author, None, 'this is not a command')
-        self.assertEqual(message_validator.message_is_command(self.message), False)"""
+        self.assertEqual(message_validator.message_is_command(self.message), False)

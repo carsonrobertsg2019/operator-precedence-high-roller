@@ -14,7 +14,7 @@ from tests.mock_classes.mock_message import MockMessage
 from unittest import IsolatedAsyncioTestCase
 from mock import patch
 
-"""class TestHandleExpr(IsolatedAsyncioTestCase):
+class TestHandleExpr(IsolatedAsyncioTestCase):
     def setUp(self):
         self.author = MockAuthor(name = 'test_1234')
         self.compute = Compute()
@@ -87,4 +87,4 @@ from mock import patch
         with patch.object(high_roller, 'handle_recall_rolls') as mock:
             await high_roller.on_message(self.message)
         mock.assert_called()
-        self.assertEqual(await high_roller.on_message(self.message), None)"""
+        self.assertEqual(await high_roller.on_message(self.message), None)

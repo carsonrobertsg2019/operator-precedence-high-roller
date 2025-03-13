@@ -26,24 +26,6 @@ class Gamble:
 
     async def determine_result(self):
         res = self.c.roll_die('d20')
-        jake_res = self.c.roll_die('d11')
-        jake_responses = [
-            'forget you',
-            'take a hike',
-            'piss off',
-            'screw off',
-            'fuck you lol',
-            'fuck off',
-            'shut the fuck up',
-            'get shot and die',
-            'suck my ass',
-            'eat shit',
-            'kill yourself on facebook live so i can watch'
-        ]
-
-        """if self.message.author.name == 'jcbadaba':
-            await self.message.channel.send(jake_responses[int(jake_res[0]) + 1])
-        el"""
         if int(res[0]) % 2 == 0:
             if self.even:
                 await self.message.channel.send(str(res[0]) + ' :money_mouth:')

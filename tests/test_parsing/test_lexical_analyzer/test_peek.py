@@ -24,8 +24,8 @@ class TestPeek(unittest.TestCase):
         token = self.lexical_analyzer.peek(1)
         self.assertEqual(token.TokenType, TokenType.END_OF_FILE)
         self.assertEqual(token.lexeme, "")
-
-    """def test_at_start(self):
+        
+    def test_at_start(self):
         self.lexical_analyzer = LexicalAnalyzer("")
         token_in = Token()
         token_in.lexeme = "!"
@@ -34,4 +34,4 @@ class TestPeek(unittest.TestCase):
         self.lexical_analyzer.index = 0
         token = self.lexical_analyzer.get_token()
         self.assertEqual(token.TokenType, TokenType.COMMAND_START)
-        self.assertEqual(token.lexeme, "!")"""
+        self.assertEqual(token.lexeme, "!")

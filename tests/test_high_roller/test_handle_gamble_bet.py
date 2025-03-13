@@ -11,7 +11,7 @@ from tests.mock_classes.mock_message_attributes.mock_channel import MockChannel
 from tests.mock_classes.mock_message import MockMessage
 from unittest import IsolatedAsyncioTestCase
 
-"""class TestHandleGambleStart(IsolatedAsyncioTestCase):
+class TestHandleGambleStart(IsolatedAsyncioTestCase):
     def setUp(self):
         self.author = MockAuthor(name = 'test_1234')
         self.channel = MockChannel(name = 'rolls_test_1234')
@@ -54,4 +54,4 @@ from unittest import IsolatedAsyncioTestCase
         self.gamble.update_gambling_state(False)
         await high_roller.handle_gamble_bet(self.gamble, self.commandParser)
         self.assertFalse(self.gamble.gambling())
-        self.assertEqual(await high_roller.handle_gamble_bet(self.gamble, self.commandParser), None)"""
+        self.assertEqual(await high_roller.handle_gamble_bet(self.gamble, self.commandParser), None)

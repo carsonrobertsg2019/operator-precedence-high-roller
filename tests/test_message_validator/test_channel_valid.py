@@ -9,7 +9,7 @@ from tests.mock_classes.mock_message_attributes.mock_channel import MockChannel
 from tests.mock_classes.mock_message import MockMessage
 import unittest
 
-"""class TestChannelValid(unittest.TestCase):
+class TestChannelValid(unittest.TestCase):
     def setUp(self):
         self.author = MockAuthor(name = 'test_1234')
 
@@ -21,4 +21,4 @@ import unittest
     def test_invalid_channel(self):
         self.channel = MockChannel(name = 'this-is-not-a-valid-channel')
         self.message = MockMessage(self.author, self.channel, None)
-        self.assertEqual(message_validator.channel_valid(self.message), False)"""
+        self.assertEqual(message_validator.channel_valid(self.message), False)
